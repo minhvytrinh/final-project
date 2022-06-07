@@ -4,26 +4,29 @@ const express = require("express");
 const morgan = require("morgan");
 
 const {
-   uploadPicture,
+   uploadPost,
    getUser,
-   getUsers
+   getUsers,
+   getPosts,
+   getPost,
+   addUser
 } = require("./handlers");
 
 express()
    .use(morgan("tiny"))
    .use(express.json())
    .use(express.static("public"))
-   // .use(express.json({limit: '50mb'}))
-   // .use(express.urlencoded({limit: '50mb', extended: true}))
 
 // ---------------------------------
    .get("/api/users", getUsers)
-   .get("/api/profile", getUser)
+   .get("/api/profile/:id", getUser)
+   .post("/api/signup", addUser)
 // .patch("/api/update-profile", updateProfile)
 // .delete("/api/delete-profile", deleteProfile)
 
-
-   .post("/api/upload", uploadPicture)
+   .get("/api/posts", getPosts)
+   .get("/api/post/:postId", getPost)
+   .post("/api/post/upload", uploadPost)
 
 
 // ---------------------------------

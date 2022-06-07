@@ -5,6 +5,8 @@ import Header from "./Components/Header";
 import NewPost from "./Components/NewPost"
 import Profile from "./Components/Profile";
 import Explore from "./Components/Explore";
+import PostDetails from "./Components/PostDetails";
+
 
 const App = () => {
   return (
@@ -15,9 +17,10 @@ const App = () => {
       <Container>
         <Routes>
           <Route exact path="/" element={<Homepage />} />
-          <Route exact path="/newpost" element={<NewPost />} />
-          <Route exact path="/profile" element={<Profile />} />
-          <Route exact path="/explore" element={<Explore />} />
+          <Route path="/newpost" element={<NewPost />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/post/:postId" element={<PostDetails />} />
         </Routes>
       </Container>
           </Body>

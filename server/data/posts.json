@@ -1,0 +1,123 @@
+[
+    {
+        "imageSrc": "/client/public/posts/costarica1.jpg",
+        "authorHandle": "karina52",
+        "caption": "Sunset in Costa Rica",
+        "filmStock": "Kodak Gold 200",
+        "numOfLikes": 1,
+        "numOfComments": 0,
+        "comments": [],
+        "sub": "100"
+    },
+    {
+        "imageSrc": "/client/public/posts/costarica2.jpg",
+        "authorHandle": "karina52",
+        "caption": "Love shooting old cars on film!",
+        "filmStock": "Kodak Gold 200",
+        "numOfLikes": 3,
+        "numOfComments": 1,
+        "comments": [{"authorHandle": "el.djaz", "comment": "Me too!"}],
+        "sub": "100"
+    },    
+    {
+        "imageSrc": "/client/public/posts/cotenord1.JPG",
+        "authorHandle": "el.djaz",
+        "caption": "Riviere-au-Tonnerre, Qc",
+        "filmStock": "Kodak Portra 400",
+        "numOfLikes": 2,
+        "numOfComments": 1,
+        "comments": [{"authorHandle": "karina52", "comment": "Wowwww!"}],
+        "sub": "200"
+    },    
+    {
+        "imageSrc": "/client/public/posts/cotenord2.JPG",
+        "authorHandle": "el.djaz",
+        "caption": "🌳💚",
+        "filmStock": "Kodak Portra 400",
+        "numOfLikes": 3,
+        "numOfComments": 1,
+        "comments": [{"authorHandle": "bethy49", "comment": "Makes me wanna go on a hike"}],
+        "sub": "200"
+    },    
+    {
+        "imageSrc": "/client/public/posts/ny1.jpg",
+        "authorHandle": "mire.i.am",
+        "caption": "I took this in a food court in Brooklyn",
+        "filmStock": "Cinestill 800T",
+        "numOfLikes": 3,
+        "numOfComments": 0,
+        "comments": [],
+        "sub": "300"
+    },    
+    {
+        "imageSrc": "/client/public/posts/ny2.jpg",
+        "authorHandle": "mire.i.am",
+        "caption": "No caption needed 🍕",
+        "filmStock": "Cinestill 800T",
+        "numOfLikes": "5",
+        "numOfComments": "2",
+        "comments": [{"authorHandle": "nickynick", "comment": "Completely agreed."},
+            {"authorHandle": "mire.i.am", "comment": "Cinestill is definitely the best for artificial light!"}],
+        "sub": "300"
+    },    
+    {
+        "imageSrc": "/client/public/posts/puertorico1.jpg",
+        "authorHandle": "bethy49",
+        "caption": "When in Puerto Rico.. rent a Jeep!",
+        "filmStock": "Kodak Ultramax 400",
+        "numOfLikes": 2,
+        "numOfComments": 1,
+        "comments": [{"authorHandle": "karina52", "comment": "Looove riding Jeep! Nice pic!"}],
+        "sub": "400"
+    },    
+    {
+        "imageSrc": "/client/public/posts/puertorico2.jpg",
+        "authorHandle": "bethy49",
+        "caption": "Surfers on a sunset session",
+        "filmStock": "Kodak Ultramax 400",
+        "numOfLikes": 4,
+        "numOfComments": 0,
+        "comments": [],
+        "sub": "400"
+    },    
+    {
+        "imageSrc": "/client/public/posts/sutton1.jpg",
+        "authorHandle": "nickynick",
+        "caption": "If you're looking for us, we'll be here.",
+        "filmStock": "Kodak Colorplus 200",
+        "numOfLikes": 2,
+        "numOfComments": 0,
+        "comments": [],
+        "sub": "500"
+    },    
+    {
+        "imageSrc": "/client/public/posts/sutton1.jpg",
+        "authorHandle": "nickynick",
+        "caption": "Cows and mountains",
+        "filmStock": "Kodak Colorplus 200",
+        "numOfLikes": 1,
+        "numOfComments": 0,
+        "comments": [],
+        "sub": "500"
+    },    
+    {
+        "imageSrc": "/client/public/posts/VIETNAM011.jpg",
+        "authorHandle": "nickynick",
+        "caption": "In a small town in Northern Vietnam",
+        "filmStock": "Kodak Portra 400",
+        "numOfLikes": 5,
+        "numOfComments": 0,
+        "comments": [],
+        "sub": "500"
+    },    
+    {
+        "imageSrc": "/client/public/posts/VIETNAM022.jpg",
+        "authorHandle": "nickynick",
+        "caption": "6am in Nha Trang, Vietnam",
+        "filmStock": "Kodak Portra 400",
+        "numOfLikes": 5,
+        "numOfComments": 0,
+        "comments": [],
+        "sub": "500"
+    }
+]

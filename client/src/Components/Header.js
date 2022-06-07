@@ -3,18 +3,37 @@ import { NavLink, useNavigate } from "react-router-dom"
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineExplore } from "react-icons/md";
 import { FiPlusCircle } from "react-icons/fi";
-
-
+import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect } from 'react';
 
 const Header = () => {
-    let navigate = useNavigate()
-    
+    let navigate = useNavigate();
+    const { loginWithRedirect, isAuthenticated, user } = useAuth0();
+    console.log(user)
+    useEffect(() => {
+        fetch("/api/signup", {
+            method: "POST",
+            body: JSON.stringify({
+                user: user
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.status === 200) {
+                navigate("/");
+                }
+            });
+    }, [user])
+
     return (
         <>
         <Wrapper>
             <LogoSection onClick={() =>
                     navigate("/")} >
-                <Logo src={window.location.origin + "/Logocropped.jpg"} />
+                <Logo src={window.location.origin + "/newlogo.jpg"} />
             </LogoSection>
         <TopRightMenu>
             <Section>
@@ -32,12 +51,12 @@ const Header = () => {
                 </StyledLink>
             </Section>
             <Section>
-                <StyledLink to="/profile">
-                    <Icon>
-                        <CgProfile />
-                    </Icon>
-                    
-                </StyledLink>
+                {!isAuthenticated ? 
+                    ( <Icon><CgProfile onClick={() => loginWithRedirect()}/></Icon>) 
+                    : ( <Icon><StyledLink to="/profile">
+                            <CgProfile />
+                        </StyledLink></Icon>
+                )}
             </Section>
         </TopRightMenu>
         </Wrapper>
@@ -57,7 +76,6 @@ const LogoSection = styled.span`
 `
 const StyledLink = styled(NavLink)`
     text-decoration: none;
-    color: #484848;
 `
 const Logo = styled.img`
     height: 120px;
@@ -69,6 +87,11 @@ const Section = styled.span`
     padding-right: 20px;
 `
 const Icon = styled.span`
+    text-decoration: none;
     font-size: 30px;
+    color: #484848;
+    &:hover {
+    cursor: pointer;
+    }
 `
 export default Header;
