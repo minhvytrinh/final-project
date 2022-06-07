@@ -9,8 +9,10 @@ import { useEffect } from 'react';
 const Header = () => {
     let navigate = useNavigate();
     const { loginWithRedirect, isAuthenticated, user } = useAuth0();
-    console.log(user)
+    // console.log(user)
+
     useEffect(() => {
+        if (isAuthenticated) {
         fetch("/api/signup", {
             method: "POST",
             body: JSON.stringify({
@@ -22,10 +24,12 @@ const Header = () => {
         })
             .then((res) => res.json())
             .then((data) => {
-                if (data.status === 200) {
-                navigate("/");
-                }
+                console.log("hello", data.message)
+                // if (data.status === 201) {
+                //     navigate("/editprofile")
+                // }
             });
+        }
     }, [user])
 
     return (
@@ -33,15 +37,16 @@ const Header = () => {
         <Wrapper>
             <LogoSection onClick={() =>
                     navigate("/")} >
-                <Logo src={window.location.origin + "/newlogo.jpg"} />
+                <Logo src={window.location.origin + "/newlogo1.jpg"} />
             </LogoSection>
         <TopRightMenu>
-            <Section>
-                <StyledLink to="/newpost">
-                    <Icon>
-                        <FiPlusCircle />
-                    </Icon>
-                </StyledLink>
+        <Section>
+                {!isAuthenticated ? 
+                    ( <Icon><FiPlusCircle onClick={() => loginWithRedirect()} /></Icon>) 
+                    : ( <Icon><StyledLink to="/newpost">
+                            <FiPlusCircle />
+                        </StyledLink></Icon>
+                )}
             </Section>
             <Section>
                 <StyledLink to="/explore">
@@ -54,7 +59,7 @@ const Header = () => {
                 {!isAuthenticated ? 
                     ( <Icon><CgProfile onClick={() => loginWithRedirect()}/></Icon>) 
                     : ( <Icon><StyledLink to="/profile">
-                            <CgProfile />
+                            <CgProfile />Hello
                         </StyledLink></Icon>
                 )}
             </Section>

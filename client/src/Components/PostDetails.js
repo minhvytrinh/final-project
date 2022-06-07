@@ -1,32 +1,32 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from 'styled-components';
-import { FaRegHeart, FaRegComment } from "react-icons/fa"
+import { FaRegHeart, FaRegComment } from "react-icons/fa";
 
 const PostDetails = () => {
     const [post, setPost] = useState()
     const [loading, setLoading] = useState(true)
-    const { postId } = useParams()
+    const { id } = useParams()
 
     useEffect(() => {
         setLoading(true)
-        fetch(`/api/post/${postId}`)
+        fetch(`/api/post/${id}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log(data.data)
-                setPost(data.data);
+                console.log("post", data.data.data)
+                setPost(data.data.data);
                 setLoading(false)
         })
         .catch((err) => {
             "error";
         });
-    }, [postId]);
+    }, [id]);
 
     return (
             <Body>
                 {loading ? ("LOADING") : (
                     <>
-                    <PostContainer key={post.postId}>
+                    <PostContainer>
                         <Section>
                             <Avatar src={window.location.origin + "/users/karina.jpg"} />
                             <div>
@@ -34,7 +34,7 @@ const PostDetails = () => {
                                 <Film>{post.filmStock}</Film>
                             </div>
                         </Section>
-                        <Picture src={window.location.origin + post.imageSrc} />
+                        <Picture src={window.location.origin + post.url} />
                         <StatsSection>
                             <Icon>
                                 <FaRegHeart />
@@ -50,7 +50,7 @@ const PostDetails = () => {
                             <span>{post.caption}</span>
                         </Section>
                         <CommentsSection>
-                            {post.comments.map((comment) => {
+                            {/* {post.comments.map((comment) => {
                                 return (
                                     <div key={Math.random * 140000000000}>
                                         <CommenterAvatar src={window.location.origin + "/users/nick.jpg"} />
@@ -58,7 +58,7 @@ const PostDetails = () => {
                                         <Comments>{comment.comment}</Comments>
                                     </div>
                                 )
-                            })}
+                            })} */}
                             <AddCommentSection>
                                 <WriteComment
                                     placeholder="Write a comment.."

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import styled from 'styled-components';
 import { FiSettings } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Profile = () => {
     const { logout, user } = useAuth0();
+    let navigate = useNavigate();
     // const [user, setUser] = useState()
 
     return (
@@ -16,7 +17,7 @@ const Profile = () => {
                 <UserInfo>
                     <Section>
                         <Username>@karina52</Username>
-                        <EditProfile><FiSettings /> Edit profile</EditProfile>
+                        <EditProfile onClick={() => navigate("/editprofile")}><FiSettings /> Edit profile</EditProfile>
                         <Logout onClick={() => logout()}>Log out</Logout>
                     </Section>
                     <Section>
@@ -60,7 +61,7 @@ const UserContainer = styled.div`
 const Avatar = styled.img`
     border-radius: 50%;
     margin: 20px;
-    width: 150px;
+    width: 160px;
     border: 2px solid #B0B0B0;
     padding: 5px;
 `

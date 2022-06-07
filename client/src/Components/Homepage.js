@@ -11,7 +11,7 @@ const Homepage = () => {
         fetch("/api/posts")
             .then((res) => res.json())
             .then((data) => {
-                console.log(data.response)
+                // console.log(data.response)
                 setPosts(data.response);
                 setLoading(false)
         })
@@ -25,7 +25,7 @@ const Homepage = () => {
             {loading ? ("LOADING") : (
                 <>{posts.map((post) => {
                     return (
-                        <PostContainer key={post.postId}>
+                        <PostContainer key={post._id}>
                             <Section>
                                 <Avatar src={window.location.origin + "/users/karina.jpg"} />
                                 <div>
@@ -75,7 +75,7 @@ const Section = styled.div`
 `
 const Avatar = styled.img`
     border-radius: 50%;
-    width: 50px;
+    width: 60px;
     border: 1px solid #B0B0B0;
 `
 const Username = styled.div`

@@ -7,72 +7,78 @@ const NewPost = () => {
     const cloudName = process.env.REACT_APP_CLOUDNAME;
     const uploadPreset = process.env.REACT_APP_UPLOADPRESET;
     const { isAuthenticated, user } = useAuth0();
-    const [caption, setCaption] = useState("");
-    const [filmStock, setFilmStock] = useState("")
+    const [caption, setCaption] = useState();
+    const [filmStock, setFilmStock] = useState();
 
-    const showWidget = () => {
+    const showWidget = (e) => {
+        e.preventDefault();
         let myWidget = window.cloudinary.createUploadWidget({
-        cloudName, 
-        uploadPreset,
-        sources: [ "local", "google_drive", "instagram"],
-        multiple: false,
-        showAdvancedOptions: true,
-        cropping: true,
-        }, (error, result) => { 
-            if (!error && result && result.event === "success") { 
-            console.log('Done! Here is the image info: ', result.info); 
+            cloudName,
+            uploadPreset,
+            sources: ['local', 'google_drive', 'instagram'],
+            multiple: false,
+            showAdvancedOptions: true,
+            cropping: true,
+        },
+        (error, result) => {
+            if (!error && result && result.event === 'success') {
+            console.log('Done! Here is the image info: ', result.info.secure_url);
+
+                    fetch('/api/post/upload', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                        data: {
+                            url: result.info.secure_url,
+                            user: user.name,
+                            caption: caption,
+                            filmStock: filmStock,
+                            numOfLikes: 0,
+                            numOfComments: 0,
+                            comments: []
+                    },
+                        }),
+                        headers: { 'Content-Type': 'application/json' },
+                    })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        console.log(data.data)
+                })
+                .catch((err) => {
+                    console.log(error.message)
+                });
+
             }
         })
-        myWidget.open()
-    }
+        myWidget.open();
+    };
 
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     fetch("/api/post/upload", {
-    //         body: JSON.stringify({
-    //             userId: user.sub,
-    //             caption: caption,
-    //             filmStock: filmStock
-    //         }),
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //         })
-    //         .then((res) => res.json())
-    //         .then((data) => {
-    //             if (data.status === 200) {
-    //             console.log("post submitted")
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    //     };
+
 
     return (
         <>
-        {/* <form method="GET">
+        <form onSubmit={(e)=>showWidget(e)}>
             <textarea 
                 placeholder="Write a caption..."
                 type="text"
-                // value={caption}
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
             ></textarea>
-            <select onChange={(ev) => {}}>
-            <option>Select a film stock</option>
-            <option>Kodak Portra 400</option>
-            <option>Kodak Colorplus 200</option>
-            <option>Kodak Ultramax 400</option>
-            <option>Kodak Gold 200</option>
-            <option>CineStill 800T</option>
-            <option>Fujifim Fujicolor 200</option>
-            </select> */}
+            <select onChange={(ev) => setFilmStock(ev.target.value)}>
+                <option value="">Select a film stock</option>
+                <option value="Kodak Portra 400">Kodak Portra 400</option>
+                <option value="Kodak Colorplus 200">Kodak Colorplus 200</option>
+                <option value="Kodak Ultramax 400">Kodak Ultramax 400</option>
+                <option value="Kodak Gold 200">Kodak Gold 200</option>
+                <option value="CineStill 800T">CineStill 800T</option>
+                <option value="Fujifim Fujicolor 200">Fujifim Fujicolor 200</option>
+            </select>
             <button 
             id="upload_widget"
-            onClick={()=>showWidget()}>
-                Choose a photo</button>
-        {/* </form>     */}
-</>
+            >
+            Choose a photo
+            </button>
+        </form>    
+        </>
     )
 }
 

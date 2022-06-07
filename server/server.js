@@ -4,12 +4,13 @@ const express = require("express");
 const morgan = require("morgan");
 
 const {
-   uploadPost,
+   uploadPicture,
    getUser,
    getUsers,
    getPosts,
    getPost,
-   addUser
+   addUser,
+   updateUser
 } = require("./handlers");
 
 express()
@@ -19,14 +20,14 @@ express()
 
 // ---------------------------------
    .get("/api/users", getUsers)
-   .get("/api/profile/:id", getUser)
+   .get("/api/profile/:_id", getUser)
    .post("/api/signup", addUser)
-// .patch("/api/update-profile", updateProfile)
+   .patch("/api/update-user", updateUser)
 // .delete("/api/delete-profile", deleteProfile)
 
    .get("/api/posts", getPosts)
-   .get("/api/post/:postId", getPost)
-   .post("/api/post/upload", uploadPost)
+   .get("/api/post/:id", getPost)
+   .post("/api/post/upload", uploadPicture)
 
 
 // ---------------------------------
