@@ -4,32 +4,34 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 
 const EditProfile = () => {
-    const { isAuthenticated, user } = useAuth0();
+    const { user } = useAuth0();
     const [ bio, setBio ] = useState();
-    const [ name, setName] = useState();
+    const [ handleName, setHandleName] = useState();
     const [ username, setUsername] = useState();
-    const [ email, setEmail] = useState();
     const [ pronouns, setPronouns ] = useState();
 
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch('/api/update-user', {
+        fetch(`/api/update-user`, {
             method: 'PUT',
             body: JSON.stringify({
-                data: {
-                    bio: user.bio,
-                    email: user.email,
-                    name: user.name,
-                    username: user.username,
-                    pronouns: user.pronouns
+                    user: user,
+                    bio: bio,
+                    handleName: handleName,
+                    username: username,
+                    pronouns: pronouns
                 },
-            }),
+            ),
             headers: { 'Content-Type': 'application/json' },
         })
         .then((res) => res.json())
         .then((data) => {
-            console.log(data.data)
+            if(data.message === 200) {
+                console.log(data.message)
+            } else {
+                console.log(data.message)
+            }
         })
         .catch((err) => {
             console.log("error")
@@ -44,7 +46,8 @@ const EditProfile = () => {
                 <Section>Name:
                     <InputSection>
                         <input 
-                        onChange={(e) => setName(e.target.value)}
+                        value={handleName}
+                        onChange={(e) => setHandleName(e.target.value)}
                         >
                         </input>
                     </InputSection>
@@ -53,6 +56,7 @@ const EditProfile = () => {
                 <Section>Username:
                     <InputSection>
                         <input 
+                        value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         >
                         </input>
@@ -62,6 +66,7 @@ const EditProfile = () => {
                 <Section>Pronouns:
                     <InputSection>
                         <input 
+                        value={pronouns}
                         onChange={(e) => setPronouns(e.target.value)}
                         >
                         </input>
@@ -71,21 +76,20 @@ const EditProfile = () => {
                 <Section>Bio:
                     <InputSection>
                         <input 
+                        value={bio}
                         onChange={(e) => setBio(e.target.value)}
                         >
                         </input>
                     </InputSection>
                 </Section>
-
-                <Section>Email:
-                    <InputSection>
-                        <input 
-                        onChange={(e) => setEmail(e.target.value)}
-                        >
-                        </input>
-                    </InputSection>
-                </Section>
-                <Button type="submit">Edit profile</Button>
+                { handleName
+                && username
+                && pronouns
+                && bio ?
+                (<Button type="submit">Edit profile</Button>) : (
+                    <DisabledButton disable>Edit profile</DisabledButton>
+                )
+                }
             </form>
         </Body>
         </>
@@ -121,4 +125,15 @@ const Button = styled.button`
     cursor: pointer;
     }
 `
+const DisabledButton = styled.button`
+    margin-top:20px;
+    background-color: white;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #B0B0B0;
+    &:hover {
+    cursor: not-allowed;
+    }
+`
+
 export default EditProfile;

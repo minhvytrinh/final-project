@@ -26,16 +26,15 @@ const NewPost = () => {
                 fetch('/api/post/upload', {
                     method: 'POST',
                     body: JSON.stringify({
-                    data: {
                         url: result.info.secure_url,
-                        user: user.name,
+                        user: user.sub,
                         caption: caption,
                         filmStock: filmStock,
                         numOfLikes: 0,
                         numOfComments: 0,
                         comments: []
-                },
-                    }),
+                    },
+                    ),
                     headers: { 'Content-Type': 'application/json' },
                     })
                 .then((res) => res.json())

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from 'styled-components';
 import { FaRegHeart, FaRegComment } from "react-icons/fa";
 
@@ -7,14 +7,15 @@ const PostDetails = () => {
     const [post, setPost] = useState()
     const [loading, setLoading] = useState(true)
     const { id } = useParams()
+    const navigate = useNavigate()
 
     useEffect(() => {
         setLoading(true)
         fetch(`/api/post/${id}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log("post", data.data.data)
-                setPost(data.data.data);
+                console.log("post", data.data)
+                setPost(data.data);
                 setLoading(false)
         })
         .catch((err) => {
@@ -30,11 +31,13 @@ const PostDetails = () => {
                         <Section>
                             <Avatar src={window.location.origin + "/users/karina.jpg"} />
                             <div>
-                                <Username>@{post.authorHandle}</Username>
+                                <Username 
+                                onClick={() => navigate(`/profile/${post.user}`)}
+                                >@{post.user}</Username>
                                 <Film>{post.filmStock}</Film>
                             </div>
                         </Section>
-                        <Picture src={window.location.origin + post.url} />
+                        <Picture src={post.url} />
                         <StatsSection>
                             <Icon>
                                 <FaRegHeart />
@@ -89,7 +92,7 @@ const Section = styled.div`
 `
 const Avatar = styled.img`
     border-radius: 50%;
-    width: 50px;
+    width: 60px;
     border: 1px solid #B0B0B0;
 `
 const Username = styled.div`
@@ -104,8 +107,6 @@ const Film = styled.div`
 
 const Picture = styled.img`
     width: 100%;
-    border: 1px solid #B0B0B0;
-    margin-top: 10px;
 `
 const StatsSection = styled.div`
     display: flex;

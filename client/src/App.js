@@ -20,9 +20,8 @@ const App = () => {
         <Routes>
           <Route exact path="/" element={<Explore />} />
           <Route path="/newpost" element={<NewPost />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:_id" element={<Profile />} />
           <Route path="/post/:id" element={<PostDetails />} />
-          <Route path="/editprofile" element={<EditProfile />} />
           <Route path="/editprofile" element={<EditProfile />} />
           <Route path="/posts/:filmstock" element={<FilmStock />} />
         </Routes>

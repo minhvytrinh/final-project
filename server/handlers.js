@@ -28,7 +28,7 @@ const getUser = async (req, res) => {
     await client.connect();
 
     const db = client.db("clicks");
-    const result = await db.collection("users").findOne({ id: req.params._id });
+    const result = await db.collection("users").findOne({ _id: req.params._id });
     
     result
     ? res.status(200).json({ status: 200, data: result })
@@ -44,7 +44,6 @@ const addUser = async (req, res) => {
 
     //Connect client
     await client.connect();
-    console.log('connected!');
     const db = client.db('clicks');
     //Connect client
 
@@ -70,7 +69,6 @@ const addUser = async (req, res) => {
     
     //Close client
     client.close();
-    console.log('disconnected!');
     //Close client
     
     result.modifiedCount === 0
@@ -88,27 +86,26 @@ const addUser = async (req, res) => {
 
 // UPDATE user
 const updateUser = async (req, res) => {
-    const _id = req.params._id
-
-    // const { name, username, bio, email, pronouns  } = req.body;
+    const user = req.body
 
     const client = new MongoClient(MONGO_URI, options);
     await client.connect();
     const db = client.db("clicks");
     const newValues = {
         $set: {
-            "name": user.name,
-            "email": user.email,
-            "username": user.username,
-            "bio": user.bio,
-            "pronouns": user.pronouns
+            "handleName": user.handleName && user.handleName,
+            "username": user.username && user.username,
+            "bio": user.bio && user.bio,
+            "pronouns": user.pronouns && user.pronouns
         }
     };
-    const user = await db.collection("users").updateOne({ _id}, newValues)
+
+    const checkId = { _id: user.user.sub }
+
+    const update = await db.collection("users").updateOne(checkId, newValues)
     client.close();
 
-
-    user.modifiedCount === 1 ?
+    update.modifiedCount === 1 ?
         res.status(200).json({ status: 200, message: "User was updated!" }) :
         res.status(404).json({ status: 404, message: "Not Found!" });
 };
@@ -126,7 +123,7 @@ const getPosts = async (req, res) => {
     : res.status(404).json({ status: 404, message: "Not Found" });
 };
 
-// GET one post by _id
+// GET one post by id
 const getPost = async (req, res) => {
     const client = new MongoClient(MONGO_URI, options)
     await client.connect();
@@ -184,21 +181,38 @@ const getFilmStocks = async (req, res) => {
 
 // GET posts by filmStock
 const getPostsByFilmStock = async (req, res) => {
+    // const filmStock = filmStock.replace(/\s/g, '')
+    
+    const client = new MongoClient(MONGO_URI, options)
+    await client.connect();
 
-    // const query = { [req.params.key]: { $regex: req.params.value.toLowerCase(), $options: 'i' } };
+    const db = client.db("clicks");
+    
+    const result = await db.collection("posts").find({ filmStock: req.query.filmStock }).toArray()
 
-    // const [total, products] = await mongoReadLimit("items", query, start, limit);
+    result
+    ? res.status(200).json({ status: 200, data: result })
+    : res.status(404).json({ status: 404, data: "Not Found" });
 
-    // if (products.length > 0) {
-    //     return res.status(200).json({
-    //         status: 200,
-    //         total,
-    //         data: products
-    //     });
-    // }
-    // return res.status(404).json({ status: 404, message: "Not found!" });
+    client.close();
 }
 
+// GET posts by user
+const getPostsByUser = async (req, res) => {
+
+    const client = new MongoClient(MONGO_URI, options)
+    await client.connect();
+
+    const db = client.db("clicks");
+    
+    const result = await db.collection("posts").find({ user: req.query.user }).toArray()
+
+    result
+    ? res.status(200).json({ status: 200, data: result })
+    : res.status(404).json({ status: 404, data: "Not Found" });
+
+    client.close();
+}
 
 module.exports = {
     getUser,
@@ -209,5 +223,6 @@ module.exports = {
     addUser,
     updateUser,
     getPostsByFilmStock,
-    getFilmStocks
+    getFilmStocks,
+    getPostsByUser
 };

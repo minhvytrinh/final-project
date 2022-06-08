@@ -12,7 +12,8 @@ const {
    addUser,
    updateUser,
    getPostsByFilmStock,
-   getFilmStocks
+   getFilmStocks,
+   getPostsByUser
 } = require("./handlers");
 
 express()
@@ -30,8 +31,9 @@ express()
    .get("/api/posts", getPosts)
    .get("/api/post/:id", getPost)
    .post("/api/post/upload", uploadPicture)
-   .get("/api/posts/:filmstock", getPostsByFilmStock)
+   .get("/api/posts-by-film", getPostsByFilmStock)
    .get("/api/filmstocks", getFilmStocks)
+   .get("/api/posts-by-user", getPostsByUser)
 
    // .patch("api/post/:id", updateLikes)
    // .patch("api/post/:id", updateComments)

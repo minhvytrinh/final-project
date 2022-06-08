@@ -1,45 +1,79 @@
 import { useEffect, useState } from "react";
 import styled from 'styled-components';
 import { FiSettings } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { FaUserGraduate } from "react-icons/fa";
 
 const Profile = () => {
-    const { logout, user } = useAuth0();
+    const { logout, isAuthenticated, user } = useAuth0();
     let navigate = useNavigate();
-    // const [user, setUser] = useState()
+    const [userData, setUserData] = useState();
+    const [loading, setLoading] = useState(true)
+    const { _id } = useParams()
+    const [pictures, setPictures] = useState()
+
+    useEffect(() => {
+        setLoading(true)
+        fetch(`/api/profile/${_id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("user", data.data)
+                setUserData(data.data);
+        })
+        .catch((err) => {
+            "error";
+        });
+    }, [_id]);
+
+    useEffect(() => {
+        fetch(`/api/posts-by-user?user=${_id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("posts by user", data.data)
+                setPictures(data.data);
+                setLoading(false)
+        })
+        .catch((err) => {
+            "error";
+        });
+    }, [_id]);
 
     return (
-    <>
+    <>{loading ? "loading" : (
         <Body>
             <UserContainer>
-                <Avatar src={window.location.origin + "/users/karina.jpg"} />
+                <Avatar src={window.location.origin + "/users/007.jpg"} />
                 <UserInfo>
                     <Section>
-                        <Username>{user.username}</Username>
-                        <EditProfile onClick={() => navigate("/editprofile")}><FiSettings /> Edit profile</EditProfile>
-                        <Logout onClick={() => logout()}>Log out</Logout>
+                        <Username>@{userData.username}</Username>
+                        {isAuthenticated && 
+                            <>
+                            <EditProfile onClick={() => navigate("/editprofile")}><FiSettings /> Edit profile</EditProfile>
+                            <Logout onClick={() => logout()}>Log out</Logout>
+                            </>
+                        }
                     </Section>
                     <BioSection>
-                        <NameSection><Name>{user.name}</Name><Pronouns>{user.pronouns}</Pronouns></NameSection>
-                        <Bio>{user.bio}</Bio>
+                        <NameSection>
+                            <Name>{userData.handleName}</Name>
+                            <Pronouns>{userData.pronouns}</Pronouns>
+                        </NameSection>
+                        <Bio>{userData.bio}</Bio>
                     </BioSection>
                 </UserInfo>
             </UserContainer>
+            {pictures?.map((picture) => {
+                return (
+                    <PostsContainer key={Math.random() * 140000000000000}>
+                        <Post src={picture.url} />
 
-            <PostsContainer>
-                <Post src={window.location.origin + "/posts/Costarica1.jpg"} />
-                <Post src={window.location.origin + "/posts/costarica2.jpg"} />
-                <Post src={window.location.origin + "/posts/cotenord1.jpg"} />
-                <Post src={window.location.origin + "/posts/cotenord2.jpg"} />
-                <Post src={window.location.origin + "/posts/ny1.jpg"} />
-                <Post src={window.location.origin + "/posts/ny2.jpg"} />
-                <Post src={window.location.origin + "/posts/puertorico1.jpg"} />
-                <Post src={window.location.origin + "/posts/puertorico2.jpg"} />
-                <Post src={window.location.origin + "/posts/sutton1.jpg"} />
-                <Post src={window.location.origin + "/posts/sutton2.jpg"} />
-            </PostsContainer>
+                    </PostsContainer>
+                )
+            })}
+
         </Body>
+        )}
     </>
     )
 }

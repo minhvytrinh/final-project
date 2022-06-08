@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { NavLink, useNavigate } from "react-router-dom"
 import { CgProfile } from "react-icons/cg";
-import { MdOutlineExplore } from "react-icons/md";
+// import { MdOutlineExplore } from "react-icons/md";
 import { FiPlusCircle } from "react-icons/fi";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from 'react';
@@ -9,7 +9,6 @@ import { useEffect } from 'react';
 const Header = () => {
     let navigate = useNavigate();
     const { loginWithRedirect, isAuthenticated, user } = useAuth0();
-    // console.log(user)
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -24,7 +23,7 @@ const Header = () => {
         })
             .then((res) => res.json())
             .then((data) => {
-                console.log("hello", data.message)
+                // console.log("hello", data.message)
                 // if (data.status === 201) {
                 //     navigate("/editprofile")
                 // }
@@ -39,14 +38,23 @@ const Header = () => {
                     navigate("/")} >
                 <Logo src={window.location.origin + "/newlogo1.jpg"} />
             </LogoSection>
+
         <TopRightMenu>
+            
         <Section>
                 {!isAuthenticated ? 
-                    ( <Icon><FiPlusCircle onClick={() => loginWithRedirect()} /></Icon>) 
-                    : ( <Icon><StyledLink to="/newpost">
-                            <FiPlusCircle />
+                    ( <Icon><CgProfile onClick={() => loginWithRedirect()}/></Icon>) 
+                    : ( <Icon><StyledLink to={`/profile/${user.sub}`}>
+                            <CgProfile /><Logged>✅</Logged>
                         </StyledLink></Icon>
                 )}
+            </Section>
+        <Section>
+    
+                    <Icon><StyledLink to="/newpost">
+                            <FiPlusCircle />
+                        </StyledLink></Icon>
+            
             </Section>
             {/* <Section>
                 <StyledLink to="/explore">
@@ -55,14 +63,7 @@ const Header = () => {
                     </Icon>
                 </StyledLink>
             </Section> */}
-            <Section>
-                {!isAuthenticated ? 
-                    ( <Icon><CgProfile onClick={() => loginWithRedirect()}/></Icon>) 
-                    : ( <Icon><StyledLink to="/profile">
-                            <CgProfile /><Logged>✅</Logged>
-                        </StyledLink></Icon>
-                )}
-            </Section>
+
         </TopRightMenu>
         </Wrapper>
         </>
