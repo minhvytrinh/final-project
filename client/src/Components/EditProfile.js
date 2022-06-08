@@ -15,7 +15,7 @@ const EditProfile = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         fetch('/api/update-user', {
-            method: 'PATCH',
+            method: 'PUT',
             body: JSON.stringify({
                 data: {
                     bio: user.bio,
@@ -112,6 +112,7 @@ const InputSection = styled.div`
     align-items: right;
 `
 const Button = styled.button`
+    margin-top:20px;
     background-color: white;
     padding: 5px;
     border-radius: 4px;

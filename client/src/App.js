@@ -7,6 +7,7 @@ import Profile from "./Components/Profile";
 import Explore from "./Components/Explore";
 import PostDetails from "./Components/PostDetails";
 import EditProfile from "./Components/EditProfile";
+import FilmStock from "./Components/FilmStock";
 
 
 const App = () => {
@@ -17,12 +18,13 @@ const App = () => {
           <Body>
       <Container>
         <Routes>
-          <Route exact path="/" element={<Homepage />} />
+          <Route exact path="/" element={<Explore />} />
           <Route path="/newpost" element={<NewPost />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/explore" element={<Explore />} />
           <Route path="/post/:id" element={<PostDetails />} />
           <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/posts/:filmstock" element={<FilmStock />} />
         </Routes>
       </Container>
           </Body>

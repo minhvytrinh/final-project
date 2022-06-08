@@ -164,7 +164,40 @@ const uploadPicture = async (req, res) => {
     }
 }
 
+// GET all film stocks options
+const getFilmStocks = async (req, res) => {
+    const client = new MongoClient(MONGO_URI, options)
+    await client.connect();
 
+    const db = client.db("clicks");
+    const filmsStocks = await db.collection("posts").distinct("filmStock");
+    
+    console.log(filmsStocks);
+    if (filmsStocks.length > 0) {
+        return res.status(200).json({
+            status: 200,
+            data: filmsStocks
+        });
+    }
+    return res.status(404).json({ status: 404, message: "Not found!" });
+}
+
+// GET posts by filmStock
+const getPostsByFilmStock = async (req, res) => {
+
+    // const query = { [req.params.key]: { $regex: req.params.value.toLowerCase(), $options: 'i' } };
+
+    // const [total, products] = await mongoReadLimit("items", query, start, limit);
+
+    // if (products.length > 0) {
+    //     return res.status(200).json({
+    //         status: 200,
+    //         total,
+    //         data: products
+    //     });
+    // }
+    // return res.status(404).json({ status: 404, message: "Not found!" });
+}
 
 
 module.exports = {
@@ -174,5 +207,7 @@ module.exports = {
     getPost,
     uploadPicture,
     addUser,
-    updateUser
+    updateUser,
+    getPostsByFilmStock,
+    getFilmStocks
 };

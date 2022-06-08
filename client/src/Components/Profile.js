@@ -16,18 +16,13 @@ const Profile = () => {
                 <Avatar src={window.location.origin + "/users/karina.jpg"} />
                 <UserInfo>
                     <Section>
-                        <Username>@karina52</Username>
+                        <Username>{user.username}</Username>
                         <EditProfile onClick={() => navigate("/editprofile")}><FiSettings /> Edit profile</EditProfile>
                         <Logout onClick={() => logout()}>Log out</Logout>
                     </Section>
-                    <Section>
-                        <Stats><Number>18</Number> posts</Stats>
-                        <Stats><Number>3</Number> followers</Stats>
-                        <Stats><Number>3</Number> followings</Stats>
-                    </Section>
                     <BioSection>
-                        <NameSection><Name>Karina</Name><Pronouns>she/her</Pronouns></NameSection>
-                        <Bio>Just trying to showcase my passion!</Bio>
+                        <NameSection><Name>{user.name}</Name><Pronouns>{user.pronouns}</Pronouns></NameSection>
+                        <Bio>{user.bio}</Bio>
                     </BioSection>
                 </UserInfo>
             </UserContainer>
@@ -92,6 +87,7 @@ const UserInfo = styled.div`
 `
 const Section = styled.div`
     display: flex;
+    margin: 20px 30px 20px 0;
 `
 const Username = styled.div`
     font-size: 25px;
@@ -100,7 +96,7 @@ const Number = styled.span`
     font-weight: bold;
 `
 const Stats = styled.div`
-    margin: 20px 30px 20px 0;
+    
 `
 const Name = styled.div`
     font-weight: bold;

@@ -22,31 +22,29 @@ const NewPost = () => {
         },
         (error, result) => {
             if (!error && result && result.event === 'success') {
-            console.log('Done! Here is the image info: ', result.info.secure_url);
-
-                    fetch('/api/post/upload', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                        data: {
-                            url: result.info.secure_url,
-                            user: user.name,
-                            caption: caption,
-                            filmStock: filmStock,
-                            numOfLikes: 0,
-                            numOfComments: 0,
-                            comments: []
-                    },
-                        }),
-                        headers: { 'Content-Type': 'application/json' },
+            // console.log('Done! Here is the image info: ', result.info.secure_url);
+                fetch('/api/post/upload', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                    data: {
+                        url: result.info.secure_url,
+                        user: user.name,
+                        caption: caption,
+                        filmStock: filmStock,
+                        numOfLikes: 0,
+                        numOfComments: 0,
+                        comments: []
+                },
+                    }),
+                    headers: { 'Content-Type': 'application/json' },
                     })
-                    .then((res) => res.json())
-                    .then((data) => {
-                        console.log(data.data)
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data.data)
                 })
                 .catch((err) => {
                     console.log(error.message)
                 });
-
             }
         })
         myWidget.open();

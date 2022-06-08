@@ -48,18 +48,18 @@ const Header = () => {
                         </StyledLink></Icon>
                 )}
             </Section>
-            <Section>
+            {/* <Section>
                 <StyledLink to="/explore">
                     <Icon>
                         <MdOutlineExplore />
                     </Icon>
                 </StyledLink>
-            </Section>
+            </Section> */}
             <Section>
                 {!isAuthenticated ? 
                     ( <Icon><CgProfile onClick={() => loginWithRedirect()}/></Icon>) 
                     : ( <Icon><StyledLink to="/profile">
-                            <CgProfile />Hello
+                            <CgProfile /><Logged>✅</Logged>
                         </StyledLink></Icon>
                 )}
             </Section>
@@ -98,5 +98,8 @@ const Icon = styled.span`
     &:hover {
     cursor: pointer;
     }
+`
+const Logged = styled.span`
+    font-size: 15px;
 `
 export default Header;

@@ -10,7 +10,9 @@ const {
    getPosts,
    getPost,
    addUser,
-   updateUser
+   updateUser,
+   getPostsByFilmStock,
+   getFilmStocks
 } = require("./handlers");
 
 express()
@@ -22,13 +24,17 @@ express()
    .get("/api/users", getUsers)
    .get("/api/profile/:_id", getUser)
    .post("/api/signup", addUser)
-   .patch("/api/update-user", updateUser)
+   .put("/api/update-user", updateUser)
 // .delete("/api/delete-profile", deleteProfile)
 
    .get("/api/posts", getPosts)
    .get("/api/post/:id", getPost)
    .post("/api/post/upload", uploadPicture)
+   .get("/api/posts/:filmstock", getPostsByFilmStock)
+   .get("/api/filmstocks", getFilmStocks)
 
+   // .patch("api/post/:id", updateLikes)
+   // .patch("api/post/:id", updateComments)
 
 // ---------------------------------
 // this is our catch all endpoint.
