@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import styled from 'styled-components';
-import { FiSettings } from "react-icons/fi";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
-import { FaUserGraduate } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Profile = () => {
-    const { logout, isAuthenticated, user } = useAuth0();
     let navigate = useNavigate();
     const [userData, setUserData] = useState();
     const [loading, setLoading] = useState(true)
     const { _id } = useParams()
     const [pictures, setPictures] = useState()
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         setLoading(true)
@@ -20,18 +17,6 @@ const Profile = () => {
             .then((data) => {
                 console.log("user", data.data)
                 setUserData(data.data);
-        })
-        .catch((err) => {
-            "error";
-        });
-    }, [_id]);
-
-    useEffect(() => {
-        fetch(`/api/posts-by-user?user=${_id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                console.log("posts by user", data.data)
-                setPictures(data.data);
                 setLoading(false)
         })
         .catch((err) => {
@@ -39,24 +24,41 @@ const Profile = () => {
         });
     }, [_id]);
 
+    useEffect(() => {
+        setIsLoading(true)
+        fetch(`/api/posts-by-user?user=${_id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("posts by user", data.data)
+                setPictures(data.data);
+                setIsLoading(false)
+        })
+        .catch((err) => {
+            "error";
+        });
+    }, [_id]);
+
     return (
-    <>{loading ? "loading" : (
         <Body>
-            <UserContainer>
-                <Avatar src={window.location.origin + "/users/007.jpg"} />
-                <UserInfo>
-                    <Section>
-                        <Username>@{userData.username}</Username>
-                    </Section>
-                    <BioSection>
-                        <NameSection>
-                            <Name>{userData.handleName}</Name>
-                            <Pronouns>{userData.pronouns}</Pronouns>
-                        </NameSection>
-                        <Bio>{userData.bio}</Bio>
-                    </BioSection>
-                </UserInfo>
-            </UserContainer>
+            {loading ? "loading" : (
+                <UserContainer>
+                    <Avatar src={userData.url} />
+                    <UserInfo>
+                        <Section>
+                            <Username>@{userData.username}</Username>
+                        </Section>
+                        <BioSection>
+                            <NameSection>
+                                <Name>{userData.handleName}</Name>
+                                <Pronouns>{userData.pronouns}</Pronouns>
+                            </NameSection>
+                            <Bio>{userData.bio}</Bio>
+                        </BioSection>
+                    </UserInfo>
+                </UserContainer>
+            )}
+            {isLoading ? "loading" : (
+            <>
             {pictures?.map((picture) => {
                 return (
                     <PostsContainer key={Math.random() * 140000000000000}>
@@ -66,9 +68,9 @@ const Profile = () => {
                     </PostsContainer>
                 )
             })}
+            </>
+            )}
         </Body>
-        )}
-    </>
     )
 }
 const Body = styled.div`

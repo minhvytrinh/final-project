@@ -49,33 +49,34 @@ const NewPost = () => {
         myWidget.open();
     };
 
-
-
     return (
-        <>
-        <form onSubmit={(e)=>showWidget(e)}>
-            <textarea 
-                placeholder="Write a caption..."
-                type="text"
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-            ></textarea>
-            <select onChange={(ev) => setFilmStock(ev.target.value)}>
-                <option value="">Select a film stock</option>
-                <option value="Kodak Portra 400">Kodak Portra 400</option>
-                <option value="Kodak Colorplus 200">Kodak Colorplus 200</option>
-                <option value="Kodak Ultramax 400">Kodak Ultramax 400</option>
-                <option value="Kodak Gold 200">Kodak Gold 200</option>
-                <option value="CineStill 800T">CineStill 800T</option>
-                <option value="Fujifim Fujicolor 200">Fujifim Fujicolor 200</option>
-            </select>
-            <button 
-            id="upload_widget"
-            >
-            Choose a photo
-            </button>
-        </form>    
-        </>
+        <Body>
+            <Text>Upload a new picture!</Text>
+            <form onSubmit={(e)=>showWidget(e)}>
+            <Section>
+                <textarea 
+                    required
+                    placeholder="Write a caption..."
+                    type="text"
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
+                ></textarea>
+            </Section>
+            <Section><span>Select a film stock: </span>
+                <select onChange={(ev) => setFilmStock(ev.target.value)}>
+                    <option value="Kodak Portra 400">Kodak Portra 400</option>
+                    <option value="Kodak Colorplus 200">Kodak Colorplus 200</option>
+                    <option value="Kodak Ultramax 400">Kodak Ultramax 400</option>
+                    <option value="Kodak Gold 200">Kodak Gold 200</option>
+                    <option value="CineStill 800T">CineStill 800T</option>
+                    <option value="Fujifim Fujicolor 200">Fujifim Fujicolor 200</option>
+                </select>
+            </Section>
+            <Section>
+                <Button id="upload_widget">Choose a photo</Button>
+            </Section>
+            </form>    
+        </Body>
     )
 }
 
@@ -85,36 +86,25 @@ const Body = styled.div`
     justify-content: center;
     border: 1px solid #B0B0B0;
     border-radius: 10px;
-    height: 100vh;
+    height: fit-content;
     flex-direction: column;
     align-items: center;
-`
-const PreviewSection = styled.div`
-`
-const PreviewBox = styled.div`
-    border: 1px solid #B0B0B0;
-    border-radius: 5px;
-    width: 500px;
-    height: 500px;
-    background-color: #F5F5F5;
     text-align: center;
-    align-items: center;
 `
 const Text = styled.div`
     font-size: 40px;
     color: 	#B0B0B0;
-    padding-top: 220px;
+    padding: 10px;
 `
-const FormSection = styled.div`
-`
-const Select = styled.form`
-`
-const InputUpload = styled.input`
+const Section = styled.div`
+    margin: 10px;
 `
 const Button = styled.button`
-    width: 100px;
-`
-const PreviewFile = styled.img`
-    height: 300px;
+    width: 200px;
+    margin: 10px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #B0B0B0;
+    cursor: pointer;
 `
 export default NewPost;

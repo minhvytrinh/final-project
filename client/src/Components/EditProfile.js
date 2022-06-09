@@ -2,47 +2,61 @@ import styled from 'styled-components';
 import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
-
 const EditProfile = () => {
     const { user } = useAuth0();
     const [ bio, setBio ] = useState();
     const [ handleName, setHandleName] = useState();
     const [ username, setUsername] = useState();
     const [ pronouns, setPronouns ] = useState();
+    const cloudName = process.env.REACT_APP_CLOUDNAME;
+    const uploadPreset = process.env.REACT_APP_UPLOADPRESET;
 
-
-    const handleSubmit = (e) => {
+    const showWidget = (e) => {
         e.preventDefault();
-        fetch(`/api/update-user`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                    user: user,
-                    bio: bio,
-                    handleName: handleName,
-                    username: username,
-                    pronouns: pronouns
-                },
-            ),
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            if(data.message === 200) {
-                console.log(data.message)
-            } else {
-                console.log(data.message)
+        let myWidget = window.cloudinary.createUploadWidget({
+            cloudName,
+            uploadPreset,
+            sources: ['local', 'google_drive', 'instagram'],
+            multiple: false,
+            showAdvancedOptions: true,
+            cropping: true,
+        },
+        (error, result) => {
+            if (!error && result && result.event === 'success') {
+                fetch(`/api/update-user`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        user: user,
+                        bio: bio,
+                        handleName: handleName,
+                        username: username,
+                        pronouns: pronouns,
+                        url: result.info.secure_url
+                    },
+                    ),
+                    headers: { 'Content-Type': 'application/json' },
+                })
+                .then((res) => res.json())
+                .then((data) => {
+                    if(data.message === 200) {
+                        console.log(data.message)
+                    } else {
+                        console.log(data.message)
+                    }
+                })
+                .catch((err) => {
+                    console.log("error")
+                });
             }
         })
-        .catch((err) => {
-            console.log("error")
-        });
+        myWidget.open();
     };
 
     return (
         <>
         <Body>
             <Edit>Edit your profile:</Edit>
-            <form onSubmit={(e) => handleSubmit(e)}>
+            <form onSubmit={(e) => showWidget(e)}>
                 <Section>Name:
                     <InputSection>
                         <input 
@@ -86,8 +100,8 @@ const EditProfile = () => {
                 && username
                 && pronouns
                 && bio ?
-                (<Button type="submit">Edit profile</Button>) : (
-                    <DisabledButton disable>Edit profile</DisabledButton>
+                (<Button type="submit">Add avatar & edit profile</Button>) : (
+                    <DisabledButton disable>Please fill up all field</DisabledButton>
                 )
                 }
             </form>
@@ -104,9 +118,8 @@ const Body = styled.div`
     text-align: center;
 `
 const Edit = styled.div`
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
+    font-size: 40px;
+    color: 	#B0B0B0;
     padding: 10px;
 `
 const Section = styled.div`

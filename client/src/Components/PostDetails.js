@@ -92,25 +92,27 @@ const Section = styled.div`
 `
 const Avatar = styled.img`
     border-radius: 50%;
-    width: 60px;
+    width: 70px;
     border: 1px solid #B0B0B0;
 `
 const Username = styled.div`
     font-size: 20px;
     padding: 15px 0 0 15px;
     font-weight: bold;
+    cursor: pointer;
 `
 const Film = styled.div`
+margin-top: 5px;
     padding-left: 20px;
     font-size: 15px;
 `
-
 const Picture = styled.img`
     width: 100%;
+    margin-top: 10px;
 `
 const StatsSection = styled.div`
     display: flex;
-    margin: 5px;
+    margin: 5px 0 5px 13px;
 `
 const Icon = styled.span`
     font-size: 20px;
@@ -124,7 +126,7 @@ const Bold = styled.span`
 `
 const Username2 = styled.div`
     font-weight: bold;
-    margin-right: 10px;
+    margin-right: 13px;
 `
 const CommentsSection = styled.div`
     display: flex;

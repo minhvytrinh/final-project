@@ -75,11 +75,9 @@ const Header = () => {
                 </Section>
 
                 <Section>
-                    <StyledLink to="/editprofile">
                         <Icon>
                             <FiLogOut onClick={() => logout()} />
                         </Icon>
-                    </StyledLink>
                 </Section>
 
                 </>}
@@ -114,6 +112,7 @@ const Section = styled.span`
 `
 const Icon = styled.span`
     text-decoration: none;
+    color: black;
     font-size: 25px;
     &:hover {
     cursor: pointer;

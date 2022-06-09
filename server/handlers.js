@@ -92,7 +92,8 @@ const updateUser = async (req, res) => {
             "handleName": user.handleName && user.handleName,
             "username": user.username && user.username,
             "bio": user.bio && user.bio,
-            "pronouns": user.pronouns && user.pronouns
+            "pronouns": user.pronouns && user.pronouns,
+            "url": user.url && user.url
         }
     };
 
