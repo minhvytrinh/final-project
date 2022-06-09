@@ -11,7 +11,7 @@ const Explore = () => {
         fetch("/api/posts")
             .then((res) => res.json())
             .then((data) => {
-                console.log("post", data.response)
+                // console.log("post", data.response)
                 setPosts(data.response);
         })
         .catch((err) => {
@@ -20,7 +20,6 @@ const Explore = () => {
     }, []);
 
     return (
-        <>
         <Body>
             <SubHeader />
             {posts?.map((post) => {
@@ -29,13 +28,10 @@ const Explore = () => {
                         <Post 
                         onClick={() => navigate(`/post/${post.id}`)}
                         src={post.url} />
-    
                     </PostsContainer>
                 )
             })}
-
         </Body>
-        </>
     )
 }
 
@@ -54,7 +50,7 @@ const Post = styled.img`
 
     margin: 10px;
     padding: 5px;
-    width: 30%;
+    height: 300px;
     cursor: pointer;
 `;
 export default Explore;

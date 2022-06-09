@@ -47,12 +47,6 @@ const Profile = () => {
                 <UserInfo>
                     <Section>
                         <Username>@{userData.username}</Username>
-                        {isAuthenticated && 
-                            <>
-                            <EditProfile onClick={() => navigate("/editprofile")}><FiSettings /> Edit profile</EditProfile>
-                            <Logout onClick={() => logout()}>Log out</Logout>
-                            </>
-                        }
                     </Section>
                     <BioSection>
                         <NameSection>
@@ -66,12 +60,12 @@ const Profile = () => {
             {pictures?.map((picture) => {
                 return (
                     <PostsContainer key={Math.random() * 140000000000000}>
-                        <Post src={picture.url} />
-
+                        <Post 
+                        onClick={() => navigate(`/post/${picture.id}`)}
+                        src={picture.url} />
                     </PostsContainer>
                 )
             })}
-
         </Body>
         )}
     </>
@@ -94,28 +88,6 @@ const Avatar = styled.img`
     border: 2px solid #B0B0B0;
     padding: 5px;
 `
-const EditProfile = styled.button`
-    margin-left: 25px;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: white;
-    padding: 5px 7px 5px 5px;
-    border-radius: 4px;
-    border: 1px solid #B0B0B0;
-    &:hover {
-    cursor: pointer;
-    }
-`
-const Logout = styled.button`
-    margin-left: 25px;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: white;
-    padding: 5px 7px 5px 5px;
-    border-radius: 4px;
-    border: 1px solid #B0B0B0;
-    &:hover {
-    cursor: pointer;
-    }
-`
 const UserInfo = styled.div`
     margin: 40px;
 `
@@ -125,12 +97,6 @@ const Section = styled.div`
 `
 const Username = styled.div`
     font-size: 25px;
-`
-const Number = styled.span`
-    font-weight: bold;
-`
-const Stats = styled.div`
-    
 `
 const Name = styled.div`
     font-weight: bold;
@@ -157,7 +123,7 @@ const PostsContainer = styled.div`
 const Post = styled.img`
     margin: 10px;
     padding: 5px;
-    width: 230px;
+    height: 300px;
     cursor: pointer;
     display: flex;
     flex-direction: column;

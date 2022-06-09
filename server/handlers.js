@@ -42,10 +42,8 @@ const addUser = async (req, res) => {
     const user = req.body;
     const client = new MongoClient(MONGO_URI, options);
 
-    //Connect client
     await client.connect();
     const db = client.db('clicks');
-    //Connect client
 
     const checkId = { _id: user.user.sub };
     const update = {
@@ -67,10 +65,8 @@ const addUser = async (req, res) => {
         .collection('users')
         .updateOne(checkId, update, upsert);
     
-    //Close client
     client.close();
-    //Close client
-    
+
     result.modifiedCount === 0
         ? res.status(201).json({
             status: 201,
@@ -181,8 +177,6 @@ const getFilmStocks = async (req, res) => {
 
 // GET posts by filmStock
 const getPostsByFilmStock = async (req, res) => {
-    // const filmStock = filmStock.replace(/\s/g, '')
-    
     const client = new MongoClient(MONGO_URI, options)
     await client.connect();
 

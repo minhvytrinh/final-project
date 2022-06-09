@@ -13,7 +13,7 @@ const FilmStock = () => {
         fetch(`/api/posts-by-film?filmStock=${filmstock}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log(data.data)
+                // console.log(data.data)
                 setFilmStock(data.data);
         })
         .catch((err) => {
@@ -45,7 +45,7 @@ const Body = styled.div`
     border: 1px solid #B0B0B0;
     border-radius: 10px;
     height: fit-content;
-    
+
 `
 const PostsContainer = styled.div`
     width: 700px;
@@ -55,8 +55,7 @@ const PostsContainer = styled.div`
 const Post = styled.img`
     margin: 10px;
     padding: 5px;
-    width: 400px;
+    height: 300px;
     cursor: pointer;
-
 `;
 export default FilmStock;

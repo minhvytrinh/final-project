@@ -1,15 +1,16 @@
 import styled from 'styled-components';
 import { NavLink, useNavigate } from "react-router-dom"
 import { CgProfile } from "react-icons/cg";
-// import { MdOutlineExplore } from "react-icons/md";
-import { FiPlusCircle } from "react-icons/fi";
+import { FiPlusCircle, FiSettings, FiLogOut } from "react-icons/fi";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { message } from 'antd-notifications-messages';
+
 
 const Header = () => {
     let navigate = useNavigate();
-    const { loginWithRedirect, isAuthenticated, user } = useAuth0();
-
+    const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
+    
     useEffect(() => {
         if (isAuthenticated) {
         fetch("/api/signup", {
@@ -26,45 +27,63 @@ const Header = () => {
                 // console.log("hello", data.message)
                 // if (data.status === 201) {
                 //     navigate("/editprofile")
+                    
                 // }
             });
         }
     }, [user])
+    
 
     return (
         <>
         <Wrapper>
-            <LogoSection onClick={() =>
-                    navigate("/")} >
+            <LogoSection onClick={() => navigate("/")} >
                 <Logo src={window.location.origin + "/newlogo1.jpg"} />
             </LogoSection>
 
-        <TopRightMenu>
-            
-        <Section>
-                {!isAuthenticated ? 
-                    ( <Icon><CgProfile onClick={() => loginWithRedirect()}/></Icon>) 
-                    : ( <Icon><StyledLink to={`/profile/${user.sub}`}>
-                            <CgProfile /><Logged>✅</Logged>
-                        </StyledLink></Icon>
-                )}
-            </Section>
-        <Section>
-    
-                    <Icon><StyledLink to="/newpost">
-                            <FiPlusCircle />
-                        </StyledLink></Icon>
-            
-            </Section>
-            {/* <Section>
-                <StyledLink to="/explore">
+            <TopRightMenu>
+                <Section>
+                    {!isAuthenticated ? ( 
                     <Icon>
-                        <MdOutlineExplore />
+                        <CgProfile onClick={() => loginWithRedirect()}/>
                     </Icon>
-                </StyledLink>
-            </Section> */}
+                    ) : (
+                    <Icon>
+                        <StyledLink to={`/profile/${user.sub}`}>
+                            <CgProfile />
+                            <Logged>✔️</Logged>
+                        </StyledLink>
+                    </Icon>
+                    )}
+                </Section>
 
-        </TopRightMenu>
+                {isAuthenticated && <>
+                <Section>
+                    <Icon>
+                        <StyledLink to="/newpost">
+                            <FiPlusCircle />
+                        </StyledLink>
+                    </Icon>
+                </Section>
+
+                <Section>
+                    <StyledLink to="/editprofile">
+                        <Icon>
+                            <FiSettings />
+                        </Icon>
+                    </StyledLink>
+                </Section>
+
+                <Section>
+                    <StyledLink to="/editprofile">
+                        <Icon>
+                            <FiLogOut onClick={() => logout()} />
+                        </Icon>
+                    </StyledLink>
+                </Section>
+
+                </>}
+            </TopRightMenu>
         </Wrapper>
         </>
     )
@@ -82,6 +101,7 @@ const LogoSection = styled.span`
 `
 const StyledLink = styled(NavLink)`
     text-decoration: none;
+    color: black;
 `
 const Logo = styled.img`
     height: 120px;
@@ -94,13 +114,12 @@ const Section = styled.span`
 `
 const Icon = styled.span`
     text-decoration: none;
-    font-size: 30px;
-    color: #484848;
+    font-size: 25px;
     &:hover {
     cursor: pointer;
     }
 `
 const Logged = styled.span`
-    font-size: 15px;
+    font-size: 10px;
 `
 export default Header;

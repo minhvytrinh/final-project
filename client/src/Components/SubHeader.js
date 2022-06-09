@@ -10,7 +10,7 @@ const SubHeader = () => {
         fetch("/api/filmstocks")
             .then((res) => res.json())
             .then((data) => {
-                console.log(data.data)
+                // console.log(data.data)
                 setOptions(data.data);
         })
         .catch((err) => {
@@ -28,12 +28,6 @@ const SubHeader = () => {
                     >{option}</Film>
                 )
             })}
-            {/* <Film>Kodak Portra 400</Film>
-            <Film>Kodak Colorplus 200</Film>
-            <Film>Kodak Ultramax 400</Film>
-            <Film>Kodak Gold 200</Film>
-            <Film>CineStill 800T</Film>
-            <Film>Fujifim Fujicolor 200</Film> */}
         </Body>
 
     )
