@@ -65,7 +65,7 @@ console.log(user)
             <Section>
                 <TextArea 
                     required
-                    placeholder="Write a caption..."
+                    placeholder="Write a caption for your picture..."
                     type="text"
                     value={caption}
                     onChange={(e) => setCaption(e.target.value)}
@@ -73,6 +73,7 @@ console.log(user)
             </Section>
             <Section><span>Select a film stock: </span>
                 <select onChange={(ev) => setFilmStock(ev.target.value)}>
+                    <option value=""></option>
                     <option value="Kodak Portra 400">Kodak Portra 400</option>
                     <option value="Kodak Colorplus 200">Kodak Colorplus 200</option>
                     <option value="Kodak Ultramax 400">Kodak Ultramax 400</option>
@@ -109,8 +110,14 @@ const Section = styled.div`
     margin: 10px;
 `
 const TextArea = styled.textarea`
+    width: 300px;
+    padding: 10px;
     border: 2px solid orange;
     border-radius: 10px;
+    font-family: 'Quicksand';
+    :focus {
+        outline: none;
+    }
 `
 const Button = styled.button`
     background-color: orange;

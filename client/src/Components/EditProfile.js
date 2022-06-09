@@ -60,31 +60,31 @@ const EditProfile = () => {
             <form onSubmit={(e) => showWidget(e)}>
                 <Section>Name:
                     <InputSection>
-                        <input 
+                        <Input 
                         value={handleName}
                         onChange={(e) => setHandleName(e.target.value)}
                         >
-                        </input>
+                        </Input>
                     </InputSection>
                 </Section>
 
                 <Section>Pronouns:
                     <InputSection>
-                        <input 
+                        <Input 
                         value={pronouns}
                         onChange={(e) => setPronouns(e.target.value)}
                         >
-                        </input>
+                        </Input>
                     </InputSection>
                 </Section>
 
                 <Section>Bio:
                     <InputSection>
-                        <input 
+                        <Input 
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
                         >
-                        </input>
+                        </Input>
                     </InputSection>
                 </Section>
                 { handleName
@@ -118,14 +118,28 @@ const Section = styled.div`
 const InputSection = styled.div`
     align-items: right;
 `
+const Input = styled.input`
+    width: 200px;
+    padding: 5px;
+    border: 2px solid orange;
+    border-radius: 10px;
+    font-family: 'Quicksand';
+    :focus {
+        outline: none;
+    }
+`
 const Button = styled.button`
-    margin-top:20px;
-    background-color: white;
+    background-color: orange;
+    color: white;
+    border: 2px solid orange;
+    width: 200px;
+    margin: 10px;
     padding: 5px;
     border-radius: 4px;
-    border: 1px solid #B0B0B0;
-    &:hover {
-    cursor: pointer;
+    :hover {
+        cursor: pointer;
+        background-color: #f5f5f7;
+        color: orange;
     }
 `
 const DisabledButton = styled.button`
