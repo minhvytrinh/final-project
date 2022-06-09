@@ -24,38 +24,30 @@ const Explore = () => {
             <SubHeader />
             {posts?.map((post) => {
                 return (
-                    <Div>
                     <PostsContainer key={Math.random() * 140000000000000}>
-                        <div><Post 
+                        <Post 
                         onClick={() => navigate(`/post/${post.id}`)}
                         src={post.url} />
-                        </div>
                     </PostsContainer>
-                    </Div>
                 )
             })}
         </Body>
     )
 }
-const Div = styled.div`
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-`
 const Body = styled.div`
-    margin: 30px 5px 30px 5px;
+    margin: 0 10px 10px 10px;
     border: 1px solid #B0B0B0;
+    border-top: none;
     border-radius: 10px;
     height: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
 `
 const PostsContainer = styled.div`
-    /* display: flex;
-    flex-direction: row;
-    flex-wrap: wrap; */
 `
 const Post = styled.img`
-    margin: 10px;
-    padding: 5px;
+    margin: 15px 5px 5px 5px;
     height: 300px;
     cursor: pointer;
 `;

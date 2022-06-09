@@ -100,6 +100,10 @@ const LogoSection = styled.span`
 const StyledLink = styled(NavLink)`
     text-decoration: none;
     color: black;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
 `
 const Logo = styled.img`
     height: 120px;
@@ -114,8 +118,9 @@ const Icon = styled.span`
     text-decoration: none;
     color: black;
     font-size: 25px;
-    &:hover {
-    cursor: pointer;
+    :hover {
+        cursor: pointer;
+        color: orange;
     }
 `
 const Logged = styled.span`

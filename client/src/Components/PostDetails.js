@@ -2,12 +2,17 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from 'styled-components';
 import { FaRegHeart, FaRegComment } from "react-icons/fa";
+import { useAuth0 } from "@auth0/auth0-react";
+import { NotificationManager } from "react-notifications";
 
 const PostDetails = () => {
-    const [post, setPost] = useState()
-    const [loading, setLoading] = useState(true)
-    const { id } = useParams()
-    const navigate = useNavigate()
+    const { user, isAuthenticated } = useAuth0();
+    const [post, setPost] = useState();
+    const [loading, setLoading] = useState(true);
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [commentInput, setCommentInput] = useState("");
+    const [like, setLike] = useState(false)
 
     useEffect(() => {
         setLoading(true)
@@ -23,60 +28,100 @@ const PostDetails = () => {
         });
     }, [id]);
 
+    const handleNewComment = (e) => {
+        e.preventDefault();
+        fetch("/api/new-comment", {
+            body: JSON.stringify({
+                picture: user.picture,
+                nickname: user.nickname,
+                id: post.id,
+                user: user.sub,
+                comment: commentInput
+            }),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            NotificationManager.success(
+                "Comment successfully added!",
+                "Success!"
+            );
+            window.location.reload();
+        })
+        .catch((error) => {
+            console.log("error")
+        })
+    }
+
     return (
-            <Body>
-                {loading ? ("LOADING") : (
-                    <>
-                    <PostContainer>
-                        <Section>
-                            <Avatar src={window.location.origin + "/users/karina.jpg"} />
-                            <div>
-                                <Username 
-                                onClick={() => navigate(`/profile/${post.user}`)}
-                                >@{post.user}</Username>
-                                <Film>{post.filmStock}</Film>
-                            </div>
-                        </Section>
-                        <PictureContainer>
-                            <Picture src={post.url} />
-                        </PictureContainer>
-                        <StatsSection>
-                            <Icon>
-                                <FaRegHeart />
-                            </Icon>
-                            <Stats><Bold>{post.numOfLikes}</Bold> likes</Stats>
-                            <Icon>
-                                <FaRegComment />
-                            </Icon>
-                            <Stats><Bold>{post.numOfComments}</Bold> comments</Stats>
-                        </StatsSection>
-                        <Section>
-                            <Username2>@{post.user}</Username2>
-                            <span>{post.caption}</span>
-                        </Section>
-                        <CommentsSection>
-                            {/* {post.comments.map((comment) => {
-                                return (
-                                    <div key={Math.random * 140000000000}>
-                                        <CommenterAvatar src={window.location.origin + "/users/nick.jpg"} />
-                                        <Username3>{comment.authorHandle}: </Username3>
-                                        <Comments>{comment.comment}</Comments>
-                                    </div>
-                                )
-                            })} */}
-                            <AddCommentSection>
+        <Body>
+            {loading ? ("LOADING") : (
+                <>
+                <PostContainer>
+                    <Section>
+                        <Avatar src={post.avatar} />
+                        <div>
+                            <Username 
+                            onClick={() => navigate(`/profile/${post.user}`)}
+                            >@{post.author}</Username>
+                            <Film>{post.filmStock}</Film>
+                        </div>
+                    </Section>
+                    <PictureContainer>
+                        <Picture src={post.url} />
+                    </PictureContainer>
+                    <StatsSection>
+                        <Icon>
+                            <FaRegHeart />
+                        </Icon>
+                        <Stats><Bold>{post.numOfLikes}</Bold> likes</Stats>
+                        <Icon>
+                            <FaRegComment />
+                        </Icon>
+                        <Stats><Bold>{post.numOfComments}</Bold> comments</Stats>
+                    </StatsSection>
+                    <Section>
+                        <Username2>@{post.author}</Username2>
+                        <span>{post.caption}</span>
+                    </Section>
+
+                    <CommentsSection>
+                        {post.comments.map((comment) => {
+                            return (
+                                <div key={Math.random() * 140000000000000}>
+                                    <CommenterAvatar src={comment.picture} />
+                                    <Username3>@{comment.nickname} says: </Username3>
+                                    <Comments>{comment.comment}</Comments>
+                                </div>
+                            )
+                        })}
+                        {isAuthenticated && 
+                            <AddCommentForm 
+                                    onSubmit={(e) => {
+                                        handleNewComment(e)
+                                    }}>
                                 <WriteComment
                                     placeholder="Write a comment.."
+                                    value={commentInput}
+                                    onChange = {(e) => {
+                                        setCommentInput(e.target.value)}}
                                 >
                                 </WriteComment> 
-                                <Submit type="submit">Submit comment</Submit>
-                                
-                            </AddCommentSection>
-                        </CommentsSection>
-                    </PostContainer>
-                    </>
-                )}
-            </Body>
+                                <Submit
+                                type="submit"
+                                >Submit comment
+                                </Submit>
+                            </AddCommentForm>
+                        }
+                    </CommentsSection>
+                    
+                </PostContainer>
+                </>
+            )}
+        </Body>
     )
 }
 
@@ -101,7 +146,10 @@ const Username = styled.div`
     font-size: 20px;
     padding: 15px 0 0 15px;
     font-weight: bold;
-    cursor: pointer;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
 `
 const Film = styled.div`
 margin-top: 5px;
@@ -152,7 +200,7 @@ const Username3 = styled.span`
 const Comments = styled.span`
     padding: 15px 5px 0 10px;
 `
-const AddCommentSection = styled.div`
+const AddCommentForm = styled.form`
     margin: 20px 0 0 50px;
 `
 const WriteComment = styled.textarea`

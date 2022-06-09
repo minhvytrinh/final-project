@@ -2,14 +2,17 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import {Cloudinary} from "@cloudinary/url-gen";
 import { useAuth0 } from "@auth0/auth0-react";
+import { NotificationManager } from "react-notifications";
+import { useNavigate } from 'react-router-dom';
 
 const NewPost = () => {
+    const navigate = useNavigate()
     const cloudName = process.env.REACT_APP_CLOUDNAME;
     const uploadPreset = process.env.REACT_APP_UPLOADPRESET;
     const { isAuthenticated, user } = useAuth0();
     const [caption, setCaption] = useState();
     const [filmStock, setFilmStock] = useState();
-
+console.log(user)
     const showWidget = (e) => {
         e.preventDefault();
         let myWidget = window.cloudinary.createUploadWidget({
@@ -22,15 +25,17 @@ const NewPost = () => {
         },
         (error, result) => {
             if (!error && result && result.event === 'success') {
-            // console.log('Done! Here is the image info: ', result.info.secure_url);
+            console.log('Done! Here is the image info: ', result.info);
                 fetch('/api/post/upload', {
                     method: 'POST',
                     body: JSON.stringify({
+                        author: user.nickname,
+                        avatar: user.picture,
                         url: result.info.secure_url,
                         user: user.sub,
                         caption: caption,
                         filmStock: filmStock,
-                        numOfLikes: 0,
+                        numOfLikes: [],
                         numOfComments: 0,
                         comments: []
                     },
@@ -39,7 +44,11 @@ const NewPost = () => {
                     })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data.data)
+                    NotificationManager.success(
+                        "Picture successfully uploaded!",
+                        "Success!"
+                    );
+                    navigate(`/profile/${user.sub}`)
                 })
                 .catch((err) => {
                     console.log(error.message)
@@ -54,13 +63,13 @@ const NewPost = () => {
             <Text>Upload a new picture!</Text>
             <form onSubmit={(e)=>showWidget(e)}>
             <Section>
-                <textarea 
+                <TextArea 
                     required
                     placeholder="Write a caption..."
                     type="text"
                     value={caption}
                     onChange={(e) => setCaption(e.target.value)}
-                ></textarea>
+                ></TextArea>
             </Section>
             <Section><span>Select a film stock: </span>
                 <select onChange={(ev) => setFilmStock(ev.target.value)}>
@@ -99,12 +108,22 @@ const Text = styled.div`
 const Section = styled.div`
     margin: 10px;
 `
+const TextArea = styled.textarea`
+    border: 2px solid orange;
+    border-radius: 10px;
+`
 const Button = styled.button`
+    background-color: orange;
+    color: white;
+    border: 2px solid orange;
     width: 200px;
     margin: 10px;
     padding: 5px;
     border-radius: 4px;
-    border: 1px solid #B0B0B0;
-    cursor: pointer;
+    :hover {
+        cursor: pointer;
+        background-color: #f5f5f7;
+        color: orange;
+    }
 `
 export default NewPost;

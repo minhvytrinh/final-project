@@ -41,20 +41,20 @@ const FilmStock = () => {
 }
 
 const Body = styled.div`
-    margin: 30px 5px 30px 5px;
+    margin: 0 10px 10px 10px;
     border: 1px solid #B0B0B0;
+    border-top: none;
     border-radius: 10px;
     height: fit-content;
-
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
 `
 const PostsContainer = styled.div`
-    width: 700px;
-    display: flex;
 
 `
 const Post = styled.img`
-    margin: 10px;
-    padding: 5px;
+    margin: 15px 5px 5px 5px;
     height: 300px;
     cursor: pointer;
 `;

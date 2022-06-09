@@ -9,6 +9,7 @@ const options = {
 
 const { v4: uuidv4 } = require("uuid");
 
+//============================USERS HANDLERS============================
 // GET all users
 const getUsers = async (req, res) => {
     const client = new MongoClient(MONGO_URI, options);
@@ -80,7 +81,7 @@ const addUser = async (req, res) => {
         });
 };
 
-// UPDATE user
+// PUT (update) user
 const updateUser = async (req, res) => {
     const user = req.body
 
@@ -107,7 +108,8 @@ const updateUser = async (req, res) => {
         res.status(404).json({ status: 404, message: "Not Found!" });
 };
 
-//------------------------------------------------
+//============================POSTS HANDLERS============================
+// GET all posts
 const getPosts = async (req, res) => {
     const client = new MongoClient(MONGO_URI, options);
     await client.connect();
@@ -115,12 +117,14 @@ const getPosts = async (req, res) => {
     const result = await db.collection("posts").find().toArray();
     client.close();
 
-    result
-    ? res.status(200).json({ status: 200, response: result })
+    const shuffleResult = result.sort((a,b) => 0.5 - Math.random());
+
+    shuffleResult
+    ? res.status(200).json({ status: 200, response: shuffleResult })
     : res.status(404).json({ status: 404, message: "Not Found" });
 };
 
-// GET one post by id
+// GET one post by ID
 const getPost = async (req, res) => {
     const client = new MongoClient(MONGO_URI, options)
     await client.connect();
@@ -135,9 +139,9 @@ const getPost = async (req, res) => {
     client.close();
 };
 
-// ADD post
+// POST (add) post
 const uploadPicture = async (req, res) => {
-    const { url, sub, caption, filmStock } = req.body;
+    const { url, sub, caption, filmStock, nickname } = req.body;
     const newPicture = { ...req.body, id: uuidv4()  };
 
     const client = new MongoClient(MONGO_URI, options);
@@ -184,12 +188,15 @@ const getPostsByFilmStock = async (req, res) => {
     const db = client.db("clicks");
     
     const result = await db.collection("posts").find({ filmStock: req.query.filmStock }).toArray()
+    client.close();
 
-    result
-    ? res.status(200).json({ status: 200, data: result })
+    const shuffleResult = result.sort((a,b) => 0.5 - Math.random());
+
+    shuffleResult
+    ? res.status(200).json({ status: 200, data: shuffleResult })
     : res.status(404).json({ status: 404, data: "Not Found" });
 
-    client.close();
+    
 }
 
 // GET posts by user
@@ -202,11 +209,52 @@ const getPostsByUser = async (req, res) => {
     
     const result = await db.collection("posts").find({ user: req.query.user }).toArray()
 
-    result
-    ? res.status(200).json({ status: 200, data: result })
+    client.close();
+
+    const shuffleResult = result.sort((a,b) => 0.5 - Math.random());
+
+    shuffleResult
+    ? res.status(200).json({ status: 200, data: shuffleResult })
     : res.status(404).json({ status: 404, data: "Not Found" });
 
+    
+}
+
+//============================COMMENTS & LIKES HANDLERS============================
+// POST (add) new comment
+const addComments = async (req, res) => {
+    const { user, comment, id, nickname, picture } = req.body;
+
+    const client = new MongoClient(MONGO_URI, options)
+    await client.connect();
+
+    const db = client.db("clicks");
+    
+    const result = await db.collection("posts").updateMany(
+        { id: id },
+        { $push: 
+            { comments: 
+                { 
+                    authorHandle: user, 
+                    comment: comment, 
+                    nickname: nickname,
+                    picture: picture 
+                },
+            },
+            $inc: { numOfComments: +1},
+        }
+    );
+
+    result.modifiedCount === 1
+    ? res.status(200).json({ status: 200, data: result })
+    : res.status(404).json({ status: 404, message: "Comment was not added." });
+
     client.close();
+}
+
+// PATCH increments likes
+const updatingLikes = async (req, res) => {
+
 }
 
 module.exports = {
@@ -219,5 +267,7 @@ module.exports = {
     updateUser,
     getPostsByFilmStock,
     getFilmStocks,
-    getPostsByUser
+    getPostsByUser,
+    addComments,
+    updatingLikes
 };

@@ -42,10 +42,12 @@ const Profile = () => {
         <Body>
             {loading ? "loading" : (
                 <UserContainer>
-                    <Avatar src={userData.url} />
+                    {userData.url ? (<Avatar src={userData.url} />) : (
+                    <Avatar src={userData.picture} />
+                    )}
                     <UserInfo>
                         <Section>
-                            <Username>@{userData.username}</Username>
+                            <Username>@{userData.nickname}</Username>
                         </Section>
                         <BioSection>
                             <NameSection>
@@ -74,7 +76,7 @@ const Profile = () => {
     )
 }
 const Body = styled.div`
-    margin: 30px 70px 30px 70px;
+    margin: 5px;
     border: 1px solid #B0B0B0;
     border-radius: 10px;
     height: fit-content;
@@ -118,18 +120,15 @@ const BioSection = styled.div`
     flex-direction: column;
 `
 const PostsContainer = styled.div`
-    display: grid;
-    grid-template-columns: 0.1fr 0.1fr 0.1fr;
-    margin: 50px 0 50px 0;
+    margin: 0 5px 5px 5px;
+    height: fit-content;
+    display: flex;
+    flex-wrap: wrap;
 `
 const Post = styled.img`
     margin: 10px;
-    padding: 5px;
     height: 300px;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+
 `;
 export default Profile;

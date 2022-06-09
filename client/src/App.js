@@ -8,12 +8,15 @@ import Explore from "./Components/Explore";
 import PostDetails from "./Components/PostDetails";
 import EditProfile from "./Components/EditProfile";
 import FilmStock from "./Components/FilmStock";
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer } from 'react-notifications';
 
 
 const App = () => {
   return (
     <>
     <BrowserRouter>
+    <NotificationContainer />
       <Header />
           <Body>
       <Container>

@@ -1,15 +1,17 @@
 import styled from 'styled-components';
 import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { NotificationManager } from "react-notifications";
+import { useNavigate } from "react-router-dom";
 
 const EditProfile = () => {
     const { user } = useAuth0();
     const [ bio, setBio ] = useState();
     const [ handleName, setHandleName] = useState();
-    const [ username, setUsername] = useState();
     const [ pronouns, setPronouns ] = useState();
     const cloudName = process.env.REACT_APP_CLOUDNAME;
     const uploadPreset = process.env.REACT_APP_UPLOADPRESET;
+    const navigate = useNavigate();
 
     const showWidget = (e) => {
         e.preventDefault();
@@ -29,7 +31,6 @@ const EditProfile = () => {
                         user: user,
                         bio: bio,
                         handleName: handleName,
-                        username: username,
                         pronouns: pronouns,
                         url: result.info.secure_url
                     },
@@ -38,11 +39,11 @@ const EditProfile = () => {
                 })
                 .then((res) => res.json())
                 .then((data) => {
-                    if(data.message === 200) {
-                        console.log(data.message)
-                    } else {
-                        console.log(data.message)
-                    }
+                        NotificationManager.success(
+                            "Profile successfully updated!",
+                            "Success!"
+                        );
+                        navigate(`/profile/${user.sub}`)
                 })
                 .catch((err) => {
                     console.log("error")
@@ -62,16 +63,6 @@ const EditProfile = () => {
                         <input 
                         value={handleName}
                         onChange={(e) => setHandleName(e.target.value)}
-                        >
-                        </input>
-                    </InputSection>
-                </Section>
-
-                <Section>Username:
-                    <InputSection>
-                        <input 
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
                         >
                         </input>
                     </InputSection>
@@ -97,7 +88,6 @@ const EditProfile = () => {
                     </InputSection>
                 </Section>
                 { handleName
-                && username
                 && pronouns
                 && bio ?
                 (<Button type="submit">Add avatar & edit profile</Button>) : (

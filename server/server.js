@@ -13,7 +13,9 @@ const {
    updateUser,
    getPostsByFilmStock,
    getFilmStocks,
-   getPostsByUser
+   getPostsByUser,
+   addComments,
+   updatingLikes
 } = require("./handlers");
 
 express()
@@ -35,8 +37,8 @@ express()
    .get("/api/filmstocks", getFilmStocks)
    .get("/api/posts-by-user", getPostsByUser)
 
-   // .patch("api/post/:id", updateLikes)
-   // .patch("api/post/:id", updateComments)
+   .patch("api/update-likes", updatingLikes)
+   .post("/api/new-comment", addComments)
 
 // ---------------------------------
 // this is our catch all endpoint.

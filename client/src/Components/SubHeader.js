@@ -37,6 +37,7 @@ const Body = styled.div`
     padding: 10px;
     display: flex;
     border-bottom: 1px solid #B0B0B0;
+    height: 100%;
 `
 const Film = styled.div`
     font-size: 20px;
@@ -53,7 +54,7 @@ const Film = styled.div`
     :hover {
         cursor: pointer;
         background-color: #f5f5f7;
-        color: #2279d2;
+        color: orange;
     }
 `
 export default SubHeader;
