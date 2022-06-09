@@ -37,7 +37,9 @@ const PostDetails = () => {
                                 <Film>{post.filmStock}</Film>
                             </div>
                         </Section>
-                        <Picture src={post.url} />
+                        <PictureContainer>
+                            <Picture src={post.url} />
+                        </PictureContainer>
                         <StatsSection>
                             <Icon>
                                 <FaRegHeart />
@@ -49,7 +51,7 @@ const PostDetails = () => {
                             <Stats><Bold>{post.numOfComments}</Bold> comments</Stats>
                         </StatsSection>
                         <Section>
-                            <Username2>{post.authorHandle}</Username2>
+                            <Username2>@{post.user}</Username2>
                             <span>{post.caption}</span>
                         </Section>
                         <CommentsSection>
@@ -106,13 +108,18 @@ margin-top: 5px;
     padding-left: 20px;
     font-size: 15px;
 `
+const PictureContainer = styled.div`
+    height: 500px;
+    display: flex;
+    justify-content: center;
+`
 const Picture = styled.img`
-    width: 100%;
+    height: 100%;
     margin-top: 10px;
 `
 const StatsSection = styled.div`
     display: flex;
-    margin: 5px 0 5px 13px;
+    margin: 20px 0 5px 13px;
 `
 const Icon = styled.span`
     font-size: 20px;
@@ -126,7 +133,7 @@ const Bold = styled.span`
 `
 const Username2 = styled.div`
     font-weight: bold;
-    margin-right: 13px;
+    margin: 0 10px 0 13px;
 `
 const CommentsSection = styled.div`
     display: flex;
