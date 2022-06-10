@@ -67,7 +67,7 @@ const PostDetails = () => {
                             <Username 
                             onClick={() => navigate(`/profile/${post.user}`)}
                             >@{post.author}</Username>
-                            <Film>{post.filmStock}</Film>
+                            <Film>Film stock used: {post.filmStock}</Film>
                         </div>
                     </Section>
                     <PictureContainer>
@@ -77,34 +77,39 @@ const PostDetails = () => {
                         <Icon>
                             <FaRegHeart />
                         </Icon>
-                        <Stats><Bold>{post.numOfLikes}</Bold> likes</Stats>
+                        <Stats><Bold>{post.numOfLikes}</Bold> like</Stats>
                         <Icon>
                             <FaRegComment />
                         </Icon>
-                        <Stats><Bold>{post.numOfComments}</Bold> comments</Stats>
+                        <Stats><Bold>{post.numOfComments}</Bold> 
+                        {post.numOfComments > 1 ? (<> comments</>) : (<> comment</>)}
+                        </Stats>
                     </StatsSection>
                     <Section>
                         <Username2>@{post.author}</Username2>
-                        <span>{post.caption}</span>
+                        <Caption>{post.caption}</Caption>
                     </Section>
 
+{/* =============================COMMENT SECTION====================================== */}
                     <CommentsSection>
                         {post.comments.map((comment) => {
                             return (
                                 <div key={Math.random() * 140000000000000}>
-                                    <CommenterAvatar src={comment.picture} />
-                                    <Username3>@{comment.nickname} says: </Username3>
+                                    {/* <CommenterAvatar src={comment.picture} /> */}
+                                    <Username3 
+                                    onClick={() => navigate(`/profile/${comment.authorHandle}`)}
+                                    >@{comment.nickname}</Username3>commented: 
                                     <Comments>{comment.comment}</Comments>
                                 </div>
                             )
                         })}
-                        {isAuthenticated && 
+                        {isAuthenticated ? (
                             <AddCommentForm 
                                     onSubmit={(e) => {
                                         handleNewComment(e)
                                     }}>
                                 <WriteComment
-                                    placeholder="Write a comment.."
+                                    placeholder="Write a comment..."
                                     value={commentInput}
                                     onChange = {(e) => {
                                         setCommentInput(e.target.value)}}
@@ -115,9 +120,19 @@ const PostDetails = () => {
                                 >Submit comment
                                 </Submit>
                             </AddCommentForm>
-                        }
+                            ) : (
+                                <Disabled>
+                                    <AddCommentForm>
+                                        <WriteComment
+                                        disabled
+                                        placeholder="Please sign in to write a comment.">
+                                        </WriteComment> 
+                                        <DisabledSubmit
+                                        disabled>Submit comment</DisabledSubmit>
+                                    </AddCommentForm>
+                                </Disabled>
+                            )}
                     </CommentsSection>
-                    
                 </PostContainer>
                 </>
             )}
@@ -125,6 +140,25 @@ const PostDetails = () => {
     )
 }
 
+const Disabled = styled.span`
+    :hover {
+        cursor: not-allowed;
+    }
+`
+const DisabledSubmit = styled.button`
+    background-color: orange;
+    color: white;
+    border: 2px solid orange;
+    width: 150px;
+    margin: 10px;
+    padding: 5px;
+    border-radius: 4px;
+    :hover {
+        cursor: not-allowed;
+        background-color: #f5f5f7;
+        color: orange;
+    }
+`
 const Body = styled.div`
     margin: 30px 70px 30px 70px;
     border: 1px solid #B0B0B0;
@@ -182,10 +216,14 @@ const Bold = styled.span`
 const Username2 = styled.div`
     font-weight: bold;
     margin: 0 10px 0 13px;
+    font-size: 20px;
+`
+const Caption = styled.span`
+    font-size: 20px;
 `
 const CommentsSection = styled.div`
     display: flex;
-    margin-left: 20px;
+    margin: 10px 0 0 20px;
     flex-direction: column;
 `
 const CommenterAvatar = styled.img`
@@ -196,24 +234,41 @@ const CommenterAvatar = styled.img`
 `
 const Username3 = styled.span`
     padding: 15px 5px 0 10px;
+    font-weight: bold;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
 `
 const Comments = styled.span`
     padding: 15px 5px 0 10px;
 `
 const AddCommentForm = styled.form`
-    margin: 20px 0 0 50px;
+    text-align: center;
+    margin-top: 10px;
 `
-const WriteComment = styled.textarea`
+const WriteComment = styled.input`
+    width: 300px;
+    padding: 5px;
+    border: 2px solid orange;
+    border-radius: 10px;
+    font-family: 'Quicksand';
+    :focus {
+        outline: none;
+    }
 `
 const Submit = styled.button`
-    margin-left: 20px;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: white;
-    padding: 5px 7px 5px 5px;
+    background-color: orange;
+    color: white;
+    border: 2px solid orange;
+    width: 150px;
+    margin: 10px;
+    padding: 5px;
     border-radius: 4px;
-    border: 1px solid #B0B0B0;
-    &:hover {
-    cursor: pointer;
+    :hover {
+        cursor: pointer;
+        background-color: #f5f5f7;
+        color: orange;
     }
 `
 export default PostDetails;

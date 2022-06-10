@@ -61,6 +61,7 @@ const EditProfile = () => {
                 <Section>Name:
                     <InputSection>
                         <Input 
+                        required
                         value={handleName}
                         onChange={(e) => setHandleName(e.target.value)}
                         >
@@ -71,6 +72,7 @@ const EditProfile = () => {
                 <Section>Pronouns:
                     <InputSection>
                         <Input 
+                        required
                         value={pronouns}
                         onChange={(e) => setPronouns(e.target.value)}
                         >
@@ -81,19 +83,22 @@ const EditProfile = () => {
                 <Section>Bio:
                     <InputSection>
                         <Input 
+                        required
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
                         >
                         </Input>
                     </InputSection>
                 </Section>
-                { handleName
+                {/* { handleName
                 && pronouns
                 && bio ?
-                (<Button type="submit">Add avatar & edit profile</Button>) : (
+                ( */}
+                <Button type="submit">Add avatar & edit profile</Button>
+                {/* ) : (
                     <DisabledButton disable>Please fill up all field</DisabledButton>
                 )
-                }
+                } */}
             </form>
         </Body>
         </>
