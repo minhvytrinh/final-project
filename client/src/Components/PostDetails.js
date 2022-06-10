@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from 'styled-components';
-import { FaRegHeart, FaRegComment } from "react-icons/fa";
 import { useAuth0 } from "@auth0/auth0-react";
 import { NotificationManager } from "react-notifications";
+import { CgTrash } from "react-icons/cg";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { BiComment } from "react-icons/bi";
+import Comment from "./Comment";
 
 const PostDetails = () => {
     const { user, isAuthenticated } = useAuth0();
@@ -14,6 +17,7 @@ const PostDetails = () => {
     const [commentInput, setCommentInput] = useState("");
     const [like, setLike] = useState(false)
 
+// ======fetching a single picture data======
     useEffect(() => {
         setLoading(true)
         fetch(`/api/post/${id}`)
@@ -27,7 +31,7 @@ const PostDetails = () => {
             "error";
         });
     }, [id]);
-
+// ======Adding a new comment function======
     const handleNewComment = (e) => {
         e.preventDefault();
         fetch("/api/new-comment", {
@@ -55,6 +59,54 @@ const PostDetails = () => {
             console.log("error")
         })
     }
+// ======Deleting a comment function======
+    const deleteComment = (comment) => {
+        fetch(`/api/delete-comment`, {
+            body: JSON.stringify({
+                postId: post.id,
+                comment
+            }),
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("success", data)
+                NotificationManager.success(
+                "Comment successfully deleted!",
+                "Success!"
+                );
+                window.location.reload();
+            })
+            .catch((err) => {
+                "error";
+            });
+        };
+// ======LIKE BUTTON FUNCTION======
+    const handleLikes = () => {
+        fetch('/api/updating-likes', {
+            body: JSON.stringify({
+                id: post.id,
+                user: user.sub,
+            }),
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            })
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.status === 200) {
+            setLike(true);
+            window.location.reload();
+            } else {
+            setLike(false);
+
+            }
+        });
+    };
 
     return (
         <Body>
@@ -67,7 +119,11 @@ const PostDetails = () => {
                             <Username 
                             onClick={() => navigate(`/profile/${post.user}`)}
                             >@{post.author}</Username>
-                            <Film>Film stock used: {post.filmStock}</Film>
+                            <Film>Film stock used:
+                                <ClickFilm onClick={() => navigate(`/posts/${post.filmStock}`)}>
+                                    {post.filmStock}
+                                </ClickFilm>
+                            </Film>
                         </div>
                     </Section>
                     <PictureContainer>
@@ -75,18 +131,26 @@ const PostDetails = () => {
                     </PictureContainer>
                     <StatsSection>
                         <Icon>
-                            <FaRegHeart />
+                            <Span>
+                                {like ? (<AiFillHeart onClick={() => handleLikes()} />) : (
+                            <AiOutlineHeart onClick={() => handleLikes()}/>
+                            )}
+                            </Span>
                         </Icon>
-                        <Stats><Bold>{post.numOfLikes}</Bold> like</Stats>
+                        <Stats><Bold>{post.likes.length}</Bold>
+                        {post.likes > 1 ? (<> likes</>) : (<> like</>)}
+                        </Stats>
                         <Icon>
-                            <FaRegComment />
+                            <BiComment />
                         </Icon>
-                        <Stats><Bold>{post.numOfComments}</Bold> 
-                        {post.numOfComments > 1 ? (<> comments</>) : (<> comment</>)}
+                        <Stats><Bold>{post.comments.length}</Bold> 
+                        {post.comments > 1 ? (<> comments</>) : (<> comment</>)}
                         </Stats>
                     </StatsSection>
                     <Section>
-                        <Username2>@{post.author}</Username2>
+                        <Username2
+                        onClick={() => navigate(`/profile/${post.user}`)}
+                        >@{post.author}</Username2>
                         <Caption>{post.caption}</Caption>
                     </Section>
 
@@ -94,12 +158,17 @@ const PostDetails = () => {
                     <CommentsSection>
                         {post.comments.map((comment) => {
                             return (
-                                <div key={Math.random() * 140000000000000}>
+                                <div key={comment.commentId}>
                                     {/* <CommenterAvatar src={comment.picture} /> */}
                                     <Username3 
                                     onClick={() => navigate(`/profile/${comment.authorHandle}`)}
                                     >@{comment.nickname}</Username3>commented: 
                                     <Comments>{comment.comment}</Comments>
+                                    {comment.authorHandle === user.sub &&
+                                    <TrashIcon onClick={() => deleteComment(comment)} >
+                                        <CgTrash />
+                                    </TrashIcon>
+                                    }
                                 </div>
                             )
                         })}
@@ -139,7 +208,27 @@ const PostDetails = () => {
         </Body>
     )
 }
-
+const Span = styled.span`
+        :hover {
+        cursor: pointer;
+        color: orange;
+    }
+`
+const TrashIcon = styled.span`
+    float: right;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
+`
+const ClickFilm = styled.span`
+    margin-left: 5px;
+    font-weight: bold;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
+`
 const Disabled = styled.span`
     :hover {
         cursor: not-allowed;
@@ -217,6 +306,10 @@ const Username2 = styled.div`
     font-weight: bold;
     margin: 0 10px 0 13px;
     font-size: 20px;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
 `
 const Caption = styled.span`
     font-size: 20px;

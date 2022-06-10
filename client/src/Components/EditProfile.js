@@ -13,6 +13,7 @@ const EditProfile = () => {
     const uploadPreset = process.env.REACT_APP_UPLOADPRESET;
     const navigate = useNavigate();
 
+
     const showWidget = (e) => {
         e.preventDefault();
         let myWidget = window.cloudinary.createUploadWidget({
@@ -61,6 +62,7 @@ const EditProfile = () => {
                 <Section>Name:
                     <InputSection>
                         <Input 
+
                         required
                         value={handleName}
                         onChange={(e) => setHandleName(e.target.value)}

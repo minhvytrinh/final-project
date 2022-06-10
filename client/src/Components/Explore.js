@@ -1,23 +1,12 @@
 import styled from 'styled-components';
 import SubHeader from "./SubHeader";
-import { useState, useEffect } from "react";
+import { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
+import { GlobalContext } from "./GlobalContext";
 
 const Explore = () => {
-    const [posts, setPosts] = useState()
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        fetch("/api/posts")
-            .then((res) => res.json())
-            .then((data) => {
-                // console.log("post", data.response)
-                setPosts(data.response);
-        })
-        .catch((err) => {
-            "error";
-        });
-    }, []);
+    const navigate = useNavigate();
+    const { posts } = useContext(GlobalContext)
 
     return (
         <Body>
@@ -44,6 +33,7 @@ const Body = styled.div`
     flex-wrap: wrap;
     justify-content: space-evenly;
 `
+
 const PostsContainer = styled.div`
 `
 const Post = styled.img`

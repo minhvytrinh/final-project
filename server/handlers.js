@@ -1,5 +1,6 @@
 "use strict";
 const { MongoClient } = require("mongodb");
+const { userInfo } = require("os");
 require("dotenv").config();
 const { MONGO_URI } = process.env;
 const options = {
@@ -59,6 +60,7 @@ const addUser = async (req, res) => {
             updated_at: user.user.updated_at,
             email: user.user.email,
             email_verified: user.user.email_verified,
+            followings: []
         },
     };
     const upsert = { upsert : true }
@@ -106,6 +108,53 @@ const updateUser = async (req, res) => {
     update.modifiedCount === 1 ?
         res.status(200).json({ status: 200, message: "User was updated!" }) :
         res.status(404).json({ status: 404, message: "Not Found!" });
+};
+
+// FOLLOW/UNFOLLOW users
+const updateFollow = async (req, res) => {
+    const { _id, user } = req.body;
+    console.log(".....", req.body)
+    const client = new MongoClient(MONGO_URI, options);
+    await client.connect();
+    const db = client.db('clicks');
+
+    const searchResult = await db.collection('users').findOne({ _id: user, followings: [{ _id }] });
+    console.log("======", searchResult)
+    if (searchResult === null) {
+        const addFollow = await db.collection('users').updateOne(
+            { _id: user },
+            {
+            $push: {
+                followings: {
+                _id
+                },
+            },
+            }
+        );
+
+        client.close();
+        console.log("44444444", addFollow)
+        addFollow.modifiedCount === 1
+        ? res.status(200).json({ status: 200, message: 'Successfully followed' })
+        : res.status(404).json({ status: 404, message: 'Not Found' });
+    } else {
+        const removeFollow = await db.collection('users').updateOne(
+            { _id: user },
+            {
+            $pull: {
+                followings: {
+                _id,
+                },
+            },
+            }
+        );
+
+        client.close();
+        console.log("546546546", removeFollow)
+        removeFollow.modifiedCount === 1
+        ? res.status(201).json({ status: 201, message: 'Successfully unfollowed' })
+        : res.status(404).json({ status: 404, message: 'Not Found' });
+    }
 };
 
 //============================POSTS HANDLERS============================
@@ -220,6 +269,8 @@ const getPostsByUser = async (req, res) => {
     
 }
 
+// DELETE a picture
+
 //============================COMMENTS & LIKES HANDLERS============================
 // POST (add) new comment
 const addComments = async (req, res) => {
@@ -238,10 +289,11 @@ const addComments = async (req, res) => {
                     authorHandle: user, 
                     comment: comment, 
                     nickname: nickname,
-                    picture: picture 
+                    picture: picture,
+                    commentId: uuidv4()
                 },
             },
-            $inc: { numOfComments: +1},
+            // $inc: { numOfComments: +1},
         }
     );
 
@@ -252,10 +304,86 @@ const addComments = async (req, res) => {
     client.close();
 }
 
-// PATCH increments likes
-const updatingLikes = async (req, res) => {
+// DELETE comment
+const deleteComment = async (req, res) => {
+    try {
+        const { postId, comment } = req.body;
+        console.log(req.body.comment)
+        const client = new MongoClient(MONGO_URI, options);
+        await client.connect();
+        const db = client.db("clicks");
 
+        const result = await db.collection("posts").updateOne(
+            { id: postId },
+            { $pull: 
+                { comments: 
+                    {  "authorHandle": comment.authorHandle,
+                        "comment": comment.comment,
+                        "nickname":comment.nickname,
+                        "picture": comment.picture,
+                        "commentId": comment.commentId
+                    } 
+                } 
+            }
+        );
+    
+        client.close();
+        res.status(200).json({ status: 200, message: "Comment deleted", result: result})
+    }
+    catch (err) {
+        console.log("err", err)
+        res.status(404).json({ status: 404, message: "Not Found", error: err });
+    }
 }
+
+// PATCH updating likes
+const updateLikes = async (req, res) => {
+    const { id, user } = req.body;
+
+    const client = new MongoClient(MONGO_URI, options);
+    await client.connect();
+    const db = client.db('clicks');
+
+    const searchResult = await db.collection('posts').findOne({ id: id, likes: [{ user: user }] });
+    
+    if (searchResult === null) {
+        const addLike = await db.collection('posts').updateOne(
+            { id: id },
+            {
+            $push: {
+                likes: {
+                user
+                },
+            },
+            }
+        );
+
+        client.close();
+        console.log("================", addLike)
+        addLike.modifiedCount === 1
+        ? res.status(200).json({ status: 200, message: 'Successfully Liked' })
+        : res.status(404).json({ status: 404, message: 'Not Found' });
+    } else {
+        const removeLike = await db.collection('posts').updateOne(
+            { id: id },
+            {
+            $pull: {
+                likes: {
+                user,
+                },
+            },
+            }
+        );
+
+        client.close();
+
+        removeLike.modifiedCount === 1
+        ? res.status(201).json({ status: 201, message: 'Successfully unliked' })
+        : res.status(404).json({ status: 404, message: 'Not Found' });
+    }
+};
+
+
 
 module.exports = {
     getUser,
@@ -269,5 +397,7 @@ module.exports = {
     getFilmStocks,
     getPostsByUser,
     addComments,
-    updatingLikes
+    updateLikes,
+    deleteComment,
+    updateFollow
 };

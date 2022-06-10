@@ -15,7 +15,9 @@ const {
    getFilmStocks,
    getPostsByUser,
    addComments,
-   updatingLikes
+   updateLikes,
+   deleteComment,
+   updateFollow
 } = require("./handlers");
 
 express()
@@ -28,6 +30,7 @@ express()
    .get("/api/profile/:_id", getUser)
    .post("/api/signup", addUser)
    .put("/api/update-user", updateUser)
+   .patch("/api/follow", updateFollow)
 // .delete("/api/delete-profile", deleteProfile)
 
    .get("/api/posts", getPosts)
@@ -37,8 +40,9 @@ express()
    .get("/api/filmstocks", getFilmStocks)
    .get("/api/posts-by-user", getPostsByUser)
 
-   .patch("api/update-likes", updatingLikes)
+   .patch("/api/updating-likes", updateLikes)
    .post("/api/new-comment", addComments)
+   .delete("/api/delete-comment", deleteComment)
 
 // ---------------------------------
 // this is our catch all endpoint.

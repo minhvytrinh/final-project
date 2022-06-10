@@ -10,6 +10,23 @@ import { message } from 'antd-notifications-messages';
 const Header = () => {
     let navigate = useNavigate();
     const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
+
+    const showMessage = (type) => {
+        message({
+            type,
+            message: 'Please complete your profile before continuing.',
+            render: ({ message, style, className, icon }) => {
+                return (
+                <div style={{ ...style, background: 'white' }} className={className} >
+                    <p style={{ color: 'orange', display: 'flex' }}>
+                    <span>{icon}</span>
+                    <b> {message}</b>
+                    </p>
+                </div>
+                );
+            }
+        });
+    };
     
     useEffect(() => {
         if (isAuthenticated) {
@@ -27,7 +44,7 @@ const Header = () => {
                 // console.log("hello", data.message)
                 // if (data.status === 201) {
                 //     navigate("/editprofile")
-                    
+                //     showMessage('warning')
                 // }
             });
         }

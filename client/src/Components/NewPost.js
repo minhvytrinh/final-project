@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import {Cloudinary} from "@cloudinary/url-gen";
 import { useAuth0 } from "@auth0/auth0-react";
 import { NotificationManager } from "react-notifications";
@@ -12,7 +12,7 @@ const NewPost = () => {
     const { isAuthenticated, user } = useAuth0();
     const [caption, setCaption] = useState();
     const [filmStock, setFilmStock] = useState();
-console.log(user)
+
     const showWidget = (e) => {
         e.preventDefault();
         let myWidget = window.cloudinary.createUploadWidget({
@@ -25,7 +25,7 @@ console.log(user)
         },
         (error, result) => {
             if (!error && result && result.event === 'success') {
-            console.log('Done! Here is the image info: ', result.info);
+            // console.log('Done! Here is the image info: ', result.info);
                 fetch('/api/post/upload', {
                     method: 'POST',
                     body: JSON.stringify({
@@ -35,8 +35,7 @@ console.log(user)
                         user: user.sub,
                         caption: caption,
                         filmStock: filmStock,
-                        numOfLikes: [],
-                        numOfComments: 0,
+                        likes: [],
                         comments: []
                     },
                     ),

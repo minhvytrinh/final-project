@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import styled from 'styled-components';
 import { useNavigate, useParams } from "react-router-dom";
+import { AiFillAmazonSquare } from "react-icons/ai";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Profile = () => {
+    const { user, isAuthenticated } = useAuth0();
     let navigate = useNavigate();
     const [userData, setUserData] = useState();
     const [loading, setLoading] = useState(true)
     const { _id } = useParams()
     const [pictures, setPictures] = useState()
     const [isLoading, setIsLoading] = useState(true)
+    const [follow, setFollow] = useState(false)
+
+    console.log("current user", user)
 
     useEffect(() => {
         setLoading(true)
         fetch(`/api/profile/${_id}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log("user", data.data)
+                console.log("profile", data.data)
                 setUserData(data.data);
                 setLoading(false)
         })
@@ -29,7 +35,7 @@ const Profile = () => {
         fetch(`/api/posts-by-user?user=${_id}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log("posts by user", data.data)
+                // console.log("posts by user", data.data)
                 setPictures(data.data);
                 setIsLoading(false)
         })
@@ -37,6 +43,28 @@ const Profile = () => {
             "error";
         });
     }, [_id]);
+
+    const handleFollow = () => {
+        console.log("click")
+        fetch('/api/follow', {
+            body: JSON.stringify({
+                _id: userData._id,
+                user: user.sub,
+            }),
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            })
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.status === 200) {
+            setFollow(true);
+            } else {
+            setFollow(false);
+            }
+        });
+    };
 
     return (
         <Body>
@@ -47,6 +75,18 @@ const Profile = () => {
                     )}
                     <UserInfo>
                         <Section>
+                            {user.sub !== userData._id &&
+                            <>{!follow ? (
+                            <button
+                            onClick={() => handleFollow()}
+                            >follow</button>
+                            ) : (
+                                <button
+                                onClick={() => handleFollow()}
+                                >unfollow</button>
+                            )}
+                            </>
+                            }
                             <Username>@{userData.nickname}</Username>
                         </Section>
                         <BioSection>
