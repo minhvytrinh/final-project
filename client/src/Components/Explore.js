@@ -13,7 +13,7 @@ const Explore = () => {
             <SubHeader />
             {posts?.map((post) => {
                 return (
-                    <PostsContainer key={Math.random() * 140000000000000}>
+                    <PostsContainer key={post.id}>
                         <Post 
                         onClick={() => navigate(`/post/${post.id}`)}
                         src={post.url} />

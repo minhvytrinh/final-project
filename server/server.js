@@ -17,7 +17,8 @@ const {
    addComments,
    updateLikes,
    deleteComment,
-   updateFollow
+   updateFollow,
+   getPostsByFollowings
 } = require("./handlers");
 
 express()
@@ -39,6 +40,7 @@ express()
    .get("/api/posts-by-film", getPostsByFilmStock)
    .get("/api/filmstocks", getFilmStocks)
    .get("/api/posts-by-user", getPostsByUser)
+   .get("/api/posts-by-followings", getPostsByFollowings)
 
    .patch("/api/updating-likes", updateLikes)
    .post("/api/new-comment", addComments)

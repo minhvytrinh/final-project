@@ -1,74 +1,88 @@
 import styled from 'styled-components';
-import { useEffect, useState } from "react";
-import { FaRegHeart, FaRegComment } from "react-icons/fa"
+import { useEffect, useState, useContext } from "react";
+import { GlobalContext } from "./GlobalContext";
+import { useParams, useNavigate } from "react-router-dom";
+import { AiOutlineHeart } from "react-icons/ai";
+import { BiComment } from "react-icons/bi";
 
 const Homepage = () => {
-    const [posts, setPosts] = useState()
-    const [loading, setLoading] = useState(true)
+    const { posts } = useContext(GlobalContext)
+    const [userData, setUserData] = useState();
+    const { _id } = useParams()
+    const navigate = useNavigate()
 
     useEffect(() => {
-        setLoading(true)
-        fetch("/api/posts")
+        fetch(`/api/profile/${_id}`)
             .then((res) => res.json())
             .then((data) => {
-                // console.log(data.response)
-                setPosts(data.response);
-                setLoading(false)
+                setUserData(data.data);
         })
         .catch((err) => {
             "error";
         });
-    }, []);
+    }, [_id]);
+
+    const findFollowings = userData?.followings.map((following) => {
+        return following
+    })
 
     return (
         <Body>
-            {loading ? ("LOADING") : (
-                <>{posts.map((post) => {
+            {posts?.map((post) => {
+                if (findFollowings?.some((following) => following._id === post.user)) {
                     return (
                         <PostContainer key={post._id}>
                             <Section>
-                                <Avatar src={window.location.origin + "/users/karina.jpg"} />
+                                <Avatar src={post.avatar} />
                                 <div>
-                                    <Username>@{post.authorHandle}</Username>
-                                    <Film>{post.filmStock}</Film>
+                                    <Username onClick={() => navigate(`/profile/${post.user}`)}>
+                                        @{post.author}
+                                    </Username>
+                                    <Film>Film stock used:
+                                        <ClickFilm onClick={() => navigate(`/posts/${post.filmStock}`)}>
+                                            {post.filmStock}
+                                        </ClickFilm>
+                                    </Film>
                                 </div>
                             </Section>
-                            <Picture src={window.location.origin + "/posts/sutton2.jpg"}/>
-                            <StatsSection>
+                            <PictureContainer onClick={() => navigate(`/post/${post.id}`)}>
+                                <Picture src={post.url} />
+                            </PictureContainer>
+                            <StatsSection onClick={() => navigate(`/post/${post.id}`)}>
                                 <Icon>
-                                    <FaRegHeart />
+                                    <Span>
+                                        <AiOutlineHeart />
+                                    </Span>
                                 </Icon>
-                                <Stats><Bold>{post.numOfLikes}</Bold> likes</Stats>
+                                <Stats>{post.likes.length}</Stats>
                                 <Icon>
-                                    <FaRegComment />
+                                    <BiComment />
                                 </Icon>
-                                <Stats><Bold>{post.numOfComments}</Bold> comments</Stats>
+                                <Stats>{post.comments.length}</Stats>
                             </StatsSection>
                             <Section>
-                                <Username2>@karina52</Username2>
-                                <span>{post.caption}</span>
+                                <Username2 onClick={() => navigate(`/profile/${post.user}`)}>
+                                    @{post.author}
+                                </Username2>
+                                <Caption>{post.caption}</Caption>
                             </Section>
-                            <CommentsSection>
-                                <CommenterAvatar src={window.location.origin + "/users/nick.jpg"} />
-                                <Username3>@nickynick:</Username3>
-                                <Comments>Amazing shot!</Comments>
-                            </CommentsSection>
-                            <Border />
+
                         </PostContainer>
                     )
-                })}</>
-            )}
+                }
+            })}
         </Body>
     )
 }
 const Body = styled.div`
-    margin: 30px 170px 30px 170px;
+    margin: 30px 120px 30px 120px;
+`
+const PostContainer = styled.div`
+    margin: 10px;
+    padding: 15px;
     border: 1px solid #B0B0B0;
     border-radius: 10px;
     height: fit-content;
-`
-const PostContainer = styled.div`
-    margin: 20px;
 `
 const Section = styled.div`
     display: flex;
@@ -76,26 +90,50 @@ const Section = styled.div`
 const Avatar = styled.img`
     border-radius: 50%;
     width: 60px;
-    border: 1px solid #B0B0B0;
+    :hover {
+        cursor: pointer;
+        width: 56px;
+        border: 2px solid orange;
+    }
 `
 const Username = styled.div`
-    font-size: 20px;
-    padding: 15px 0 0 15px;
+    font-size: 18px;
+    padding: 13px 0 0 15px;
     font-weight: bold;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
 `
 const Film = styled.div`
     padding-left: 20px;
     font-size: 15px;
 `
-
+const ClickFilm = styled.span`
+    margin-left: 5px;
+    font-weight: bold;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
+`
+const PictureContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    :hover {
+        cursor: pointer;
+    }
+`
 const Picture = styled.img`
-    width: 100%;
-    border: 1px solid #B0B0B0;
+    height: 400px;
     margin-top: 10px;
 `
 const StatsSection = styled.div`
     display: flex;
-    margin: 5px;
+    margin: 7px 5px 0 20px;
+    :hover {
+        cursor: pointer;
+    }
 `
 const Icon = styled.span`
     font-size: 20px;
@@ -103,32 +141,24 @@ const Icon = styled.span`
 `
 const Stats = styled.div`
     margin-right: 30px;
-`
-const Bold = styled.span`
     font-weight: bold;
 `
 const Username2 = styled.div`
     font-weight: bold;
-    margin-right: 10px;
+    margin: 0 10px 0 20px;
+    font-size: 16px;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
 `
-const CommentsSection = styled.div`
-    display: flex;
-    margin-left: 20px;
+const Caption = styled.span`
+    font-size: 16px;
 `
-const CommenterAvatar = styled.img`
-    border-radius: 50%;
-    width: 30px;
-    border: 1px solid #B0B0B0;
-    margin: 10px 0 0 10px;
-`
-const Username3 = styled.div`
-    padding: 15px 5px 0 10px;
-`
-const Comments = styled.span`
-    padding: 15px 5px 0 10px;
-`
-const Border = styled.div`
-    margin-top: 30px;
-    border-bottom: 1px solid #B0B0B0;
+const Span = styled.span`
+        :hover {
+        cursor: pointer;
+        color: orange;
+    }
 `
 export default Homepage;

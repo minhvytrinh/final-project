@@ -60,7 +60,6 @@ const addUser = async (req, res) => {
             updated_at: user.user.updated_at,
             email: user.user.email,
             email_verified: user.user.email_verified,
-            followings: []
         },
     };
     const upsert = { upsert : true }
@@ -265,8 +264,27 @@ const getPostsByUser = async (req, res) => {
     shuffleResult
     ? res.status(200).json({ status: 200, data: shuffleResult })
     : res.status(404).json({ status: 404, data: "Not Found" });
+}
 
-    
+// GET  posts by followings (by user)
+const getPostsByFollowings = async (req, res) => {
+
+    const client = new MongoClient(MONGO_URI, options)
+    await client.connect();
+
+    const db = client.db("clicks");
+
+    const findUsersFollowings = await db.collection("users").find({ user: req.query.user }).toArray()
+
+    const result = await db.collection("posts").find({ user: req.query.user }).toArray()
+
+    client.close();
+
+    const shuffleResult = result.sort((a,b) => 0.5 - Math.random());
+
+    shuffleResult
+    ? res.status(200).json({ status: 200, data: shuffleResult })
+    : res.status(404).json({ status: 404, data: "Not Found" });
 }
 
 // DELETE a picture
@@ -399,5 +417,6 @@ module.exports = {
     addComments,
     updateLikes,
     deleteComment,
-    updateFollow
+    updateFollow,
+    getPostsByFollowings
 };

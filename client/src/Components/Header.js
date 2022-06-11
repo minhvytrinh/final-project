@@ -3,9 +3,10 @@ import { NavLink, useNavigate } from "react-router-dom"
 import { CgProfile } from "react-icons/cg";
 import { FiPlusCircle, FiSettings, FiLogOut } from "react-icons/fi";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { message } from 'antd-notifications-messages';
-
+import { MdOutlineExplore } from "react-icons/md";
+import { BiHomeAlt } from "react-icons/bi";
 
 const Header = () => {
     let navigate = useNavigate();
@@ -41,7 +42,7 @@ const Header = () => {
         })
             .then((res) => res.json())
             .then((data) => {
-                // console.log("hello", data.message)
+                // console.log("hello")
                 // if (data.status === 201) {
                 //     navigate("/editprofile")
                 //     showMessage('warning')
@@ -54,11 +55,58 @@ const Header = () => {
     return (
         <>
         <Wrapper>
-            <LogoSection onClick={() => navigate("/")} >
-                <Logo src={window.location.origin + "/newlogo1.jpg"} />
-            </LogoSection>
+            {isAuthenticated ? (
+                <LogoSection onClick={() => navigate(`/homepage/${user.sub}`)} >
+                    <Logo src={window.location.origin + "/newlogo1.jpg"} />
+                </LogoSection>
+            ) : (
+                <LogoSection onClick={() => navigate("/")} >
+                    <Logo src={window.location.origin + "/newlogo1.jpg"} />
+                </LogoSection>
+            )}
 
             <TopRightMenu>
+
+            {isAuthenticated &&
+                <Section>
+                    <Icon>
+                        <StyledLink to={`/homepage/${user.sub}`}>
+                            <BiHomeAlt />
+                        </StyledLink>
+                    </Icon>
+                </Section>
+                }
+
+                {isAuthenticated &&
+                <Section>
+                    <Icon>
+                        <StyledLink to="/newpost">
+                            <FiPlusCircle />
+                        </StyledLink>
+                    </Icon>
+                </Section>
+                }
+
+                {isAuthenticated &&
+                <Section>
+                    <StyledLink to="/">
+                        <Icon>
+                            <MdOutlineExplore />
+                        </Icon>
+                    </StyledLink>
+                </Section>
+                }
+
+                {isAuthenticated &&
+                <Section>
+                    <StyledLink to="/editprofile">
+                        <Icon>
+                            <FiSettings />
+                        </Icon>
+                    </StyledLink>
+                </Section>
+                }
+                
                 <Section>
                     {!isAuthenticated ? ( 
                     <Icon>
@@ -67,37 +115,21 @@ const Header = () => {
                     ) : (
                     <Icon>
                         <StyledLink to={`/profile/${user.sub}`}>
-                            <CgProfile />
-                            <Logged>✔️</Logged>
+                            <Avatar src={user.picture} />
                         </StyledLink>
                     </Icon>
                     )}
                 </Section>
 
-                {isAuthenticated && <>
-                <Section>
-                    <Icon>
-                        <StyledLink to="/newpost">
-                            <FiPlusCircle />
-                        </StyledLink>
-                    </Icon>
-                </Section>
-
-                <Section>
-                    <StyledLink to="/editprofile">
-                        <Icon>
-                            <FiSettings />
-                        </Icon>
-                    </StyledLink>
-                </Section>
-
+                {isAuthenticated &&
                 <Section>
                         <Icon>
                             <FiLogOut onClick={() => logout()} />
                         </Icon>
                 </Section>
+                }
 
-                </>}
+
             </TopRightMenu>
         </Wrapper>
         </>
@@ -129,7 +161,7 @@ const TopRightMenu = styled.div`
     padding-top: 70px;
 `
 const Section = styled.span`
-    padding-right: 20px;
+    padding-right: 10px;
 `
 const Icon = styled.span`
     text-decoration: none;
@@ -140,7 +172,13 @@ const Icon = styled.span`
         color: orange;
     }
 `
-const Logged = styled.span`
-    font-size: 10px;
+const Avatar = styled.img`
+    border-radius: 50%;
+    width: 26px;
+    :hover {
+        cursor: pointer;
+        width: 24px;
+        border: 2px solid orange;
+    }
 `
 export default Header;

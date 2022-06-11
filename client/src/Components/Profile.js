@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from 'styled-components';
 import { useNavigate, useParams } from "react-router-dom";
-import { AiFillAmazonSquare } from "react-icons/ai";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Profile = () => {
@@ -10,12 +9,11 @@ const Profile = () => {
     const [userData, setUserData] = useState();
     const [loading, setLoading] = useState(true)
     const { _id } = useParams()
+    const [follow, setFollow] = useState(false)
     const [pictures, setPictures] = useState()
     const [isLoading, setIsLoading] = useState(true)
-    const [follow, setFollow] = useState(false)
 
-    console.log("current user", user)
-
+    // fetch info data for one user
     useEffect(() => {
         setLoading(true)
         fetch(`/api/profile/${_id}`)
@@ -30,12 +28,12 @@ const Profile = () => {
         });
     }, [_id]);
 
+    // fetch all pictures from one user
     useEffect(() => {
         setIsLoading(true)
         fetch(`/api/posts-by-user?user=${_id}`)
             .then((res) => res.json())
             .then((data) => {
-                // console.log("posts by user", data.data)
                 setPictures(data.data);
                 setIsLoading(false)
         })
@@ -44,8 +42,8 @@ const Profile = () => {
         });
     }, [_id]);
 
+    // function to follow a user
     const handleFollow = () => {
-        console.log("click")
         fetch('/api/follow', {
             body: JSON.stringify({
                 _id: userData._id,
@@ -74,19 +72,23 @@ const Profile = () => {
                     <Avatar src={userData.picture} />
                     )}
                     <UserInfo>
-                        <Section>
-                            {user.sub !== userData._id &&
-                            <>{!follow ? (
-                            <button
-                            onClick={() => handleFollow()}
-                            >follow</button>
-                            ) : (
-                                <button
+                    <Div>{isAuthenticated && 
+                                <>{user.sub !== userData._id &&
+                                <>{!follow ? (
+                                <FollowButton
                                 onClick={() => handleFollow()}
-                                >unfollow</button>
-                            )}
-                            </>
+                                >follow</FollowButton>
+                                ) : (
+                                    <FollowButton
+                                    onClick={() => handleFollow()}
+                                    >unfollow</FollowButton>
+                                )}
+                                </>
+                                }
+                                </>
                             }
+                            </Div>
+                        <Section>
                             <Username>@{userData.nickname}</Username>
                         </Section>
                         <BioSection>
@@ -103,7 +105,7 @@ const Profile = () => {
             <>
             {pictures?.map((picture) => {
                 return (
-                    <PostsContainer key={Math.random() * 140000000000000}>
+                    <PostsContainer key={picture.id}>
                         <Post 
                         onClick={() => navigate(`/post/${picture.id}`)}
                         src={picture.url} />
@@ -129,18 +131,36 @@ const Avatar = styled.img`
     border-radius: 50%;
     margin: 20px;
     width: 160px;
-    border: 2px solid #B0B0B0;
+    border: 2px solid orange;
     padding: 5px;
 `
 const UserInfo = styled.div`
     margin: 40px;
 `
+const Div = styled.div`
+    float: right;
+`
 const Section = styled.div`
     display: flex;
     margin: 20px 30px 20px 0;
+    justify-content: space-evenly;
 `
 const Username = styled.div`
     font-size: 25px;
+`
+const FollowButton = styled.button`
+    background-color: orange;
+    color: white;
+    border: 2px solid orange;
+    width: 80px;
+    margin: 10px;
+    padding: 5px;
+    border-radius: 4px;
+    :hover {
+        cursor: pointer;
+        background-color: #f5f5f7;
+        color: orange;
+    }
 `
 const Name = styled.div`
     font-weight: bold;
