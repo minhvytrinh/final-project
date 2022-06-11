@@ -62,12 +62,6 @@ const PostDetails = () => {
         }
     };
 
-    const findLikes = post?.likes.map((like) => {
-        return like
-    })
-
-    console.log("findLikes", findLikes);
-
     return (
         <Body>
             {loading ? ("LOADING") : (
@@ -93,20 +87,9 @@ const PostDetails = () => {
                     <StatsSection>
                         <Icon>
                             <HeartIcon onClick={() => handleLikes()}>
-                                
-                        {findLikes?.map((like) => {
-                            console.log("like", like)
-                            return (
-                                <>
-                                {user.sub === like.user ? (
-                                    <AiFillHeart />
-                                ) : (
-                                    <AiOutlineHeart />
-                                )}
-                                </>
-                            )
-                        })}
-
+                            {post.likes.some((like) => {
+                                return like.user === user.sub
+                            }) ? <AiFillHeart /> : <AiOutlineHeart />}
                             </HeartIcon>
                         </Icon>
                         <Stats>

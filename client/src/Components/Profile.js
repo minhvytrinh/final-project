@@ -12,7 +12,7 @@ const Profile = () => {
     const [follow, setFollow] = useState(false)
     const [pictures, setPictures] = useState()
     const [isLoading, setIsLoading] = useState(true)
-
+console.log("current user", user)
     // fetch info data for one user
     useEffect(() => {
         setLoading(true)
@@ -58,8 +58,10 @@ const Profile = () => {
         .then((data) => {
             if (data.status === 200) {
             setFollow(true);
+            window.location.reload();
             } else {
             setFollow(false);
+            window.location.reload();
             }
         });
     };
@@ -74,15 +76,17 @@ const Profile = () => {
                     <UserInfo>
                     <Div>{isAuthenticated && 
                                 <>{user.sub !== userData._id &&
-                                <>{!follow ? (
+                                <>
+                                
+                                {userData.followings?.some((following) => {
+                                    return following._id === user.sub
+                                }) ? <FollowButton
+                                onClick={() => handleFollow()}
+                                >unfollow</FollowButton> :
                                 <FollowButton
                                 onClick={() => handleFollow()}
                                 >follow</FollowButton>
-                                ) : (
-                                    <FollowButton
-                                    onClick={() => handleFollow()}
-                                    >unfollow</FollowButton>
-                                )}
+                                }
                                 </>
                                 }
                                 </>

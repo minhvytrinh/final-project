@@ -10,12 +10,15 @@ const Homepage = () => {
     const [userData, setUserData] = useState();
     const { _id } = useParams()
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true)
         fetch(`/api/profile/${_id}`)
             .then((res) => res.json())
             .then((data) => {
                 setUserData(data.data);
+                setLoading(false)
         })
         .catch((err) => {
             "error";
@@ -27,6 +30,7 @@ const Homepage = () => {
     })
 
     return (
+        <>{loading ? ("") : (
         <Body>
             {posts?.map((post) => {
                 if (findFollowings?.some((following) => following._id === post.user)) {
@@ -72,6 +76,8 @@ const Homepage = () => {
                 }
             })}
         </Body>
+    )}
+    </>
     )
 }
 const Body = styled.div`
