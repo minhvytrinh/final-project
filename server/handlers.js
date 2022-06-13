@@ -112,13 +112,15 @@ const updateUser = async (req, res) => {
 // FOLLOW/UNFOLLOW users
 const updateFollow = async (req, res) => {
     const { _id, user } = req.body;
-    console.log(".....", req.body)
+
     const client = new MongoClient(MONGO_URI, options);
     await client.connect();
     const db = client.db('clicks');
 
-    const searchResult = await db.collection('users').findOne({ _id: user, followings: [{ _id }] });
-    console.log("======", searchResult)
+    // with the user _id, check in the followings array to see if that _id is in 
+    const searchResult = await db.collection('users').findOne({ _id: user, "followings._id": _id });
+
+    // if can't find match, it means the current user is not following the person, so we can PUSH their _id in the followings array
     if (searchResult === null) {
         const addFollow = await db.collection('users').updateOne(
             { _id: user },
@@ -130,27 +132,50 @@ const updateFollow = async (req, res) => {
             },
             }
         );
-
-        client.close();
-        console.log("44444444", addFollow)
-        addFollow.modifiedCount === 1
-        ? res.status(200).json({ status: 200, message: 'Successfully followed' })
-        : res.status(404).json({ status: 404, message: 'Not Found' });
-    } else {
-        const removeFollow = await db.collection('users').updateOne(
-            { _id: user },
+        // also updating the followers array from the user being followed
+        const addFollower = await db.collection('users').updateOne(
+            { _id: _id },
             {
-            $pull: {
-                followings: {
-                _id,
+            $push: {
+                followers: {
+                user
                 },
             },
             }
         );
 
         client.close();
-        console.log("546546546", removeFollow)
-        removeFollow.modifiedCount === 1
+
+        addFollow.modifiedCount === 1 && addFollower.modifiedCount === 1
+        ? res.status(200).json({ status: 200, message: 'Successfully followed' })
+        : res.status(404).json({ status: 404, message: 'Not Found' });
+    } else {
+        // if the verification does find a match, it means the user is already following the person, so we need to REMOVE the user from the array (unfollowing)
+        const removeFollow = await db.collection('users').updateOne(
+            { _id: user },
+            {
+            $pull: {
+                followings: {
+                _id
+                },
+            },
+            }
+        );
+        // also removing the follower from the followers array
+        const removeFollower = await db.collection('users').updateOne(
+            { _id: _id },
+            {
+            $pull: {
+                followers: {
+                user
+                },
+            },
+            }
+        );
+
+        client.close();
+
+        removeFollow.modifiedCount === 1 && removeFollower.modifiedCount === 1
         ? res.status(201).json({ status: 201, message: 'Successfully unfollowed' })
         : res.status(404).json({ status: 404, message: 'Not Found' });
     }
@@ -194,13 +219,12 @@ const uploadPicture = async (req, res) => {
 
     const client = new MongoClient(MONGO_URI, options);
 
-    //Connect client
     await client.connect();
-    console.log('connected!');
+
     const db = client.db('clicks');
-    //Connect client
+
     const update = await db.collection("posts").insertOne(newPicture);
-    console.log("update", update)
+
     client.close();
 
     if (update.insertedId) {
@@ -266,29 +290,6 @@ const getPostsByUser = async (req, res) => {
     : res.status(404).json({ status: 404, data: "Not Found" });
 }
 
-// GET  posts by followings (by user)
-const getPostsByFollowings = async (req, res) => {
-
-    const client = new MongoClient(MONGO_URI, options)
-    await client.connect();
-
-    const db = client.db("clicks");
-
-    const findUsersFollowings = await db.collection("users").find({ user: req.query.user }).toArray()
-
-    const result = await db.collection("posts").find({ user: req.query.user }).toArray()
-
-    client.close();
-
-    const shuffleResult = result.sort((a,b) => 0.5 - Math.random());
-
-    shuffleResult
-    ? res.status(200).json({ status: 200, data: shuffleResult })
-    : res.status(404).json({ status: 404, data: "Not Found" });
-}
-
-// DELETE a picture
-
 //============================COMMENTS & LIKES HANDLERS============================
 // POST (add) new comment
 const addComments = async (req, res) => {
@@ -311,7 +312,6 @@ const addComments = async (req, res) => {
                     commentId: uuidv4()
                 },
             },
-            // $inc: { numOfComments: +1},
         }
     );
 
@@ -362,8 +362,10 @@ const updateLikes = async (req, res) => {
     await client.connect();
     const db = client.db('clicks');
 
-    const searchResult = await db.collection('posts').findOne({ id: id, likes: [{ user: user }] });
+    // checking in the "likes" array of the picture to see if we find the user
+    const searchResult = await db.collection('posts').findOne({ id: id, "likes.user": user });
     
+    // if we don't find the user (null) then we push the user in that array
     if (searchResult === null) {
         const addLike = await db.collection('posts').updateOne(
             { id: id },
@@ -377,11 +379,12 @@ const updateLikes = async (req, res) => {
         );
 
         client.close();
-        console.log("================", addLike)
+
         addLike.modifiedCount === 1
         ? res.status(200).json({ status: 200, message: 'Successfully Liked' })
         : res.status(404).json({ status: 404, message: 'Not Found' });
     } else {
+        // if we DO find the user, we pull that user from the array (meaning they unlike the picture)
         const removeLike = await db.collection('posts').updateOne(
             { id: id },
             {
@@ -401,8 +404,6 @@ const updateLikes = async (req, res) => {
     }
 };
 
-
-
 module.exports = {
     getUser,
     getUsers,
@@ -417,6 +418,5 @@ module.exports = {
     addComments,
     updateLikes,
     deleteComment,
-    updateFollow,
-    getPostsByFollowings
+    updateFollow
 };

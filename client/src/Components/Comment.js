@@ -5,6 +5,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { NotificationManager } from "react-notifications";
 import { CgTrash } from "react-icons/cg";
 
+// this component is the comment section, responsible for the adding and deleting a comment feature
 const Comment = ( { post } ) => {
     const { user, isAuthenticated } = useAuth0();
     const navigate = useNavigate();

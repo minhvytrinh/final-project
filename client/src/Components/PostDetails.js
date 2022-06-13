@@ -2,19 +2,20 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from 'styled-components';
 import { useAuth0 } from "@auth0/auth0-react";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { BiComment } from "react-icons/bi";
+import { FiLoader } from "react-icons/fi";
 import Comment from "./Comment";
 import { NotificationManager } from "react-notifications";
 
+// this component is when the user is clicking on a picture, it will bring them to this page, which is 
+// a detailed version of the picture. They will be able to see the picture bigger, leave a comment and like
 const PostDetails = () => {
     const { user, isAuthenticated } = useAuth0();
     const [post, setPost] = useState();
     const [loading, setLoading] = useState(true);
     const { id } = useParams();
     const navigate = useNavigate();
-    const [like, setLike] = useState(false)
-    console.log("current user", user)
 
 // ======fetching a single picture data======
     useEffect(() => {
@@ -46,13 +47,7 @@ const PostDetails = () => {
                 })
             .then((res) => res.json())
             .then((data) => {
-                if (data.status === 200) {
-                setLike(true);
                 window.location.reload();
-                } else {
-                setLike(false);
-                window.location.reload();
-                }
             });
         } else {
             NotificationManager.warning(
@@ -64,7 +59,9 @@ const PostDetails = () => {
 
     return (
         <Body>
-            {loading ? ("LOADING") : (
+            {loading ? (<Loading>
+                <FiLoader />
+            </Loading>) : (
                 <>
                 <PostContainer>
                     <Section>
@@ -123,6 +120,16 @@ const Body = styled.div`
     border: 1px solid #B0B0B0;
     border-radius: 10px;
     height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+const Loading = styled.div`
+    text-align: center;
+    height: 100vh;
+    font-size: 60px;
+    margin-top: 100px;
+    color: 	#B0B0B0;
 `
 const PostContainer = styled.div`
     margin: 20px;

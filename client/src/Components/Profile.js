@@ -1,19 +1,23 @@
 import { useEffect, useState } from "react";
 import styled from 'styled-components';
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, NavLink } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { FiLoader } from "react-icons/fi";
+import { BiComment } from "react-icons/bi";
+import { AiOutlineHeart } from "react-icons/ai";
 
+//this is the component for the profile of any user. on this page, users will see all pictures from that specific
+// user and they will be able to follow or unfollow them
 const Profile = () => {
     const { user, isAuthenticated } = useAuth0();
     let navigate = useNavigate();
     const [userData, setUserData] = useState();
     const [loading, setLoading] = useState(true)
     const { _id } = useParams()
-    const [follow, setFollow] = useState(false)
     const [pictures, setPictures] = useState()
     const [isLoading, setIsLoading] = useState(true)
-console.log("current user", user)
-    // fetch info data for one user
+
+    // fetch data for one user
     useEffect(() => {
         setLoading(true)
         fetch(`/api/profile/${_id}`)
@@ -34,6 +38,7 @@ console.log("current user", user)
         fetch(`/api/posts-by-user?user=${_id}`)
             .then((res) => res.json())
             .then((data) => {
+                console.log("pictures", data.data)
                 setPictures(data.data);
                 setIsLoading(false)
         })
@@ -42,7 +47,7 @@ console.log("current user", user)
         });
     }, [_id]);
 
-    // function to follow a user
+    // function to follow/unfollow a user
     const handleFollow = () => {
         fetch('/api/follow', {
             body: JSON.stringify({
@@ -56,44 +61,45 @@ console.log("current user", user)
             })
         .then((res) => res.json())
         .then((data) => {
-            if (data.status === 200) {
-            setFollow(true);
             window.location.reload();
-            } else {
-            setFollow(false);
-            window.location.reload();
-            }
         });
     };
 
     return (
         <Body>
-            {loading ? "loading" : (
+            {loading ? (
+            <Loading>
+                <FiLoader />
+            </Loading>) : (
                 <UserContainer>
-                    {userData.url ? (<Avatar src={userData.url} />) : (
-                    <Avatar src={userData.picture} />
+                    {userData?.url ? (<Avatar src={userData.url} />) : (
+                    <Avatar src={userData?.picture} />
                     )}
                     <UserInfo>
-                    <Div>{isAuthenticated && 
-                                <>{user.sub !== userData._id &&
-                                <>
-                                
-                                {userData.followings?.some((following) => {
-                                    return following._id === user.sub
-                                }) ? <FollowButton
-                                onClick={() => handleFollow()}
-                                >unfollow</FollowButton> :
-                                <FollowButton
-                                onClick={() => handleFollow()}
-                                >follow</FollowButton>
-                                }
-                                </>
-                                }
-                                </>
+                        {/* only show the follow button if the user is logged in AND isn't looking at their own profile*/}
+                        <Div>{isAuthenticated && 
+                            <>
+                            {user.sub !== userData._id &&
+                            // if user is already following that person, it will show "unfollow"
+                                <FollowButton onClick={() => handleFollow()}>
+                                    {userData.followers?.some((follower) => {
+                                        return follower.user === user.sub
+                                    })
+                                    ? <>unfollow</> : (
+                                        <>follow</>
+                                    )}
+                                </FollowButton>
                             }
-                            </Div>
+                            </>
+                        }</Div>
                         <Section>
                             <Username>@{userData.nickname}</Username>
+                        </Section>
+                        <Section>
+                            <Number>{userData.followers.length}</Number>
+                            <Followers> followers</Followers>
+                            <Number>{userData.followings.length}</Number>
+                            <Followers> followings</Followers>
                         </Section>
                         <BioSection>
                             <NameSection>
@@ -105,27 +111,77 @@ console.log("current user", user)
                     </UserInfo>
                 </UserContainer>
             )}
-            {isLoading ? "loading" : (
+            {/* ==============PICTURE SECTION================ */}
+            {isLoading ? (            
+            <Loading>
+                <FiLoader />
+            </Loading>) : (
             <>
-            {pictures?.map((picture) => {
+            {/* if current logged in user doesn't have any picture, showing a link to upload new picture */}
+            {pictures.length < 1 && user.sub === userData?.id ? (
+                <Upload>
+                    <StyledLink to="/newpost">
+                    Click here to start sharing pictures!
+                    </StyledLink>
+                </Upload>
+            ) : (
+            <>
+            {pictures.map((picture) => {
                 return (
-                    <PostsContainer key={picture.id}>
-                        <Post 
-                        onClick={() => navigate(`/post/${picture.id}`)}
-                        src={picture.url} />
-                    </PostsContainer>
+                    <PostContainer key={picture.id}>
+                        <Section1>
+                            <Avatar1 src={userData?.url} />
+                                <div>
+                                    <Username1>@{picture.author}</Username1>
+                                        <Film>Film stock used:
+                                            <ClickFilm onClick={() => navigate(`/posts/${picture.filmStock}`)}>
+                                                {picture.filmStock}
+                                            </ClickFilm>
+                                        </Film>
+                                </div>
+                        </Section1>
+                        <PictureContainer onClick={() => navigate(`/post/${picture.id}`)}>
+                            <Picture src={picture.url} />
+                        </PictureContainer>
+                        <StatsSection onClick={() => navigate(`/post/${picture.id}`)}>
+                            <Icon>
+                                <span>
+                                    <AiOutlineHeart />
+                                </span>
+                            </Icon>
+                            <Stats>{picture.likes.length}</Stats>
+                                <Icon>
+                                    <BiComment />
+                                </Icon>
+                            <Stats>{picture.comments.length}</Stats>
+                        </StatsSection>
+                            <Section1>
+                                <Username2>@{picture.author}</Username2>
+                                <Caption>{picture.caption}</Caption>
+                            </Section1>
+                    </PostContainer>
                 )
             })}
+                </>
+            )}
+            
             </>
             )}
         </Body>
     )
 }
 const Body = styled.div`
-    margin: 5px;
+    margin: 10px 50px 10px 50px;
     border: 1px solid #B0B0B0;
     border-radius: 10px;
     height: fit-content;
+`
+const Loading = styled.div`
+    text-align: center;
+    height: 100vh;
+    font-size: 60px;
+    margin-top: 100px;
+    color: 	#B0B0B0;
 `
 const UserContainer = styled.div`
     display: flex;
@@ -146,12 +202,20 @@ const Div = styled.div`
 `
 const Section = styled.div`
     display: flex;
-    margin: 20px 30px 20px 0;
+    margin: 10px 30px 10px 0;
     justify-content: space-evenly;
 `
 const Username = styled.div`
     font-size: 25px;
 `
+const Number = styled.div`
+    font-weight: bold;
+`
+const Followers = styled.span`
+    color: #B0B0B0;
+    margin: 0 10px 0 10px;
+`
+
 const FollowButton = styled.button`
     background-color: orange;
     color: white;
@@ -183,16 +247,88 @@ const BioSection = styled.div`
     display: flex;
     flex-direction: column;
 `
-const PostsContainer = styled.div`
-    margin: 0 5px 5px 5px;
-    height: fit-content;
+// ============================================================
+const Upload = styled.div`
+    height: 100px;
     display: flex;
-    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 `
-const Post = styled.img`
-    margin: 10px;
-    height: 300px;
-    cursor: pointer;
-
-`;
+const StyledLink = styled(NavLink)`
+    font-size: 30px;
+    color: 	#B0B0B0;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
+`
+const PostContainer = styled.div`
+    margin: 20px 100px 20px 100px;
+    padding: 15px;
+    border: 0.5px solid #B0B0B0;
+    border-radius: 7px;
+    height: fit-content;
+`
+const Section1 = styled.div`
+    display: flex;
+`
+const Avatar1 = styled.img`
+    border-radius: 50%;
+    width: 60px;
+`
+const Username1 = styled.div`
+    font-size: 18px;
+    padding: 13px 0 0 15px;
+    font-weight: bold;
+`
+const Film = styled.div`
+    padding-left: 20px;
+    font-size: 15px;
+`
+const ClickFilm = styled.span`
+    margin-left: 5px;
+    font-weight: bold;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
+`
+const PictureContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    :hover {
+        cursor: pointer;
+    }
+`
+const Picture = styled.img`
+    height: 400px;
+    margin-top: 10px;
+`
+const StatsSection = styled.div`
+    display: flex;
+    margin: 7px 5px 0 20px;
+    :hover {
+        cursor: pointer;
+    }
+`
+const Icon = styled.span`
+    font-size: 20px;
+    margin-right: 5px;
+`
+const Stats = styled.div`
+    margin-right: 30px;
+    font-weight: bold;
+`
+const Username2 = styled.div`
+    font-weight: bold;
+    margin: 0 10px 0 20px;
+    font-size: 16px;
+`
+const Caption = styled.span`
+    font-size: 16px;
+`
 export default Profile;

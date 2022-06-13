@@ -17,8 +17,7 @@ const {
    addComments,
    updateLikes,
    deleteComment,
-   updateFollow,
-   getPostsByFollowings
+   updateFollow
 } = require("./handlers");
 
 express()
@@ -27,21 +26,22 @@ express()
    .use(express.static("public"))
 
 // ---------------------------------
+   // USERS ENDPOINTS
    .get("/api/users", getUsers)
    .get("/api/profile/:_id", getUser)
    .post("/api/signup", addUser)
    .put("/api/update-user", updateUser)
    .patch("/api/follow", updateFollow)
-// .delete("/api/delete-profile", deleteProfile)
 
+   // POSTS (PICTURES) ENDPOINTS
    .get("/api/posts", getPosts)
    .get("/api/post/:id", getPost)
    .post("/api/post/upload", uploadPicture)
    .get("/api/posts-by-film", getPostsByFilmStock)
    .get("/api/filmstocks", getFilmStocks)
    .get("/api/posts-by-user", getPostsByUser)
-   .get("/api/posts-by-followings", getPostsByFollowings)
 
+   // LIKES & COMMENTS ENDPOINTS
    .patch("/api/updating-likes", updateLikes)
    .post("/api/new-comment", addComments)
    .delete("/api/delete-comment", deleteComment)

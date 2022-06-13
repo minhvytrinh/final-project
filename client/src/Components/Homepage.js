@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { useEffect, useState, useContext } from "react";
 import { GlobalContext } from "./GlobalContext";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, NavLink } from "react-router-dom";
 import { AiOutlineHeart } from "react-icons/ai";
 import { BiComment } from "react-icons/bi";
+import { FiLoader } from "react-icons/fi";
 
 const Homepage = () => {
     const { posts } = useContext(GlobalContext)
@@ -17,6 +18,7 @@ const Homepage = () => {
         fetch(`/api/profile/${_id}`)
             .then((res) => res.json())
             .then((data) => {
+                // console.log("userData", data.data)
                 setUserData(data.data);
                 setLoading(false)
         })
@@ -25,63 +27,92 @@ const Homepage = () => {
         });
     }, [_id]);
 
-    const findFollowings = userData?.followings.map((following) => {
-        return following
-    })
-
     return (
-        <>{loading ? ("") : (
+        <>{loading ? 
+            (<Loading>
+            <FiLoader />
+        </Loading>) : (
         <Body>
-            {posts?.map((post) => {
-                if (findFollowings?.some((following) => following._id === post.user)) {
-                    return (
-                        <PostContainer key={post._id}>
-                            <Section>
-                                <Avatar src={post.avatar} />
-                                <div>
-                                    <Username onClick={() => navigate(`/profile/${post.user}`)}>
+            {!userData.followings || userData.followings.length < 1 ? (<>
+            <Text>Start following users to have a feed!
+                <div>
+                    <StyledLink to="/">Click here to explore</StyledLink>
+                </div>
+            </Text>
+            </>) : (<> 
+                {posts?.map((post) => {
+                    if (userData.followings?.some((following) => following._id === post.user)) {
+                        return (
+                            <PostContainer key={post._id}>
+                                <Section>
+                                    <Avatar src={post.avatar} />
+                                    <div>
+                                        <Username onClick={() => navigate(`/profile/${post.user}`)}>
+                                            @{post.author}
+                                        </Username>
+                                        <Film>Film stock used:
+                                            <ClickFilm onClick={() => navigate(`/posts/${post.filmStock}`)}>
+                                                {post.filmStock}
+                                            </ClickFilm>
+                                        </Film>
+                                    </div>
+                                </Section>
+                                <PictureContainer onClick={() => navigate(`/post/${post.id}`)}>
+                                    <Picture src={post.url} />
+                                </PictureContainer>
+                                <StatsSection onClick={() => navigate(`/post/${post.id}`)}>
+                                    <Icon>
+                                        <Span>
+                                            <AiOutlineHeart />
+                                        </Span>
+                                    </Icon>
+                                    <Stats>{post.likes.length}</Stats>
+                                    <Icon>
+                                        <BiComment />
+                                    </Icon>
+                                    <Stats>{post.comments.length}</Stats>
+                                </StatsSection>
+                                <Section>
+                                    <Username2 onClick={() => navigate(`/profile/${post.user}`)}>
                                         @{post.author}
-                                    </Username>
-                                    <Film>Film stock used:
-                                        <ClickFilm onClick={() => navigate(`/posts/${post.filmStock}`)}>
-                                            {post.filmStock}
-                                        </ClickFilm>
-                                    </Film>
-                                </div>
-                            </Section>
-                            <PictureContainer onClick={() => navigate(`/post/${post.id}`)}>
-                                <Picture src={post.url} />
-                            </PictureContainer>
-                            <StatsSection onClick={() => navigate(`/post/${post.id}`)}>
-                                <Icon>
-                                    <Span>
-                                        <AiOutlineHeart />
-                                    </Span>
-                                </Icon>
-                                <Stats>{post.likes.length}</Stats>
-                                <Icon>
-                                    <BiComment />
-                                </Icon>
-                                <Stats>{post.comments.length}</Stats>
-                            </StatsSection>
-                            <Section>
-                                <Username2 onClick={() => navigate(`/profile/${post.user}`)}>
-                                    @{post.author}
-                                </Username2>
-                                <Caption>{post.caption}</Caption>
-                            </Section>
-
-                        </PostContainer>
-                    )
-                }
-            })}
+                                    </Username2>
+                                    <Caption>{post.caption}</Caption>
+                                </Section>
+                            </PostContainer>
+                        )
+                    }
+                })}
+            </>)}
         </Body>
     )}
     </>
     )
 }
+const Loading = styled.div`
+    text-align: center;
+    height: 100vh;
+    font-size: 60px;
+    margin-top: 100px;
+    color: 	#B0B0B0;
+`
 const Body = styled.div`
     margin: 30px 120px 30px 120px;
+`
+const Text = styled.div`
+    font-size: 30px;
+    color: 	#B0B0B0;
+    padding: 10px;
+    text-align: center;
+`
+const StyledLink = styled(NavLink)`
+    text-decoration: none;
+    text-align: center;
+    font-size: 25px;
+    color: black;
+    :hover {
+        cursor: pointer;
+        color: orange;
+    }
 `
 const PostContainer = styled.div`
     margin: 10px;

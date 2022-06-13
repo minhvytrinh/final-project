@@ -4,7 +4,6 @@ import { CgProfile } from "react-icons/cg";
 import { FiPlusCircle, FiSettings, FiLogOut } from "react-icons/fi";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from 'react';
-import { message } from 'antd-notifications-messages';
 import { MdOutlineExplore } from "react-icons/md";
 import { BiHomeAlt } from "react-icons/bi";
 
@@ -12,23 +11,6 @@ const Header = () => {
     let navigate = useNavigate();
     const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
 
-    const showMessage = (type) => {
-        message({
-            type,
-            message: 'Please complete your profile before continuing.',
-            render: ({ message, style, className, icon }) => {
-                return (
-                <div style={{ ...style, background: 'white' }} className={className} >
-                    <p style={{ color: 'orange', display: 'flex' }}>
-                    <span>{icon}</span>
-                    <b> {message}</b>
-                    </p>
-                </div>
-                );
-            }
-        });
-    };
-    
     useEffect(() => {
         if (isAuthenticated) {
         fetch("/api/signup", {
@@ -42,11 +24,6 @@ const Header = () => {
         })
             .then((res) => res.json())
             .then((data) => {
-                // console.log("hello")
-                // if (data.status === 201) {
-                //     navigate("/editprofile")
-                //     showMessage('warning')
-                // }
             });
         }
     }, [user])
@@ -55,6 +32,8 @@ const Header = () => {
     return (
         <>
         <Wrapper>
+            {/* if the user is logged in, when clicking on the logo, it will bring them to the homefeed page,
+            if not logged in, it will bring them to the explore page */}
             {isAuthenticated ? (
                 <LogoSection onClick={() => navigate(`/homepage/${user.sub}`)} >
                     <Logo src={window.location.origin + "/newlogo1.jpg"} />
@@ -107,6 +86,9 @@ const Header = () => {
                 </Section>
                 }
                 
+                {/* if user isn't logged in, they will only see the "profile icon" on the top right menu, 
+                and by clicking on it, it will redirect to the log in page.
+                once they are logged in, they will able to see all other icons (homefeed, explore, edit profile, new post and log out) */}
                 <Section>
                     {!isAuthenticated ? ( 
                     <Icon>

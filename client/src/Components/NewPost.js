@@ -5,11 +5,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { NotificationManager } from "react-notifications";
 import { useNavigate } from 'react-router-dom';
 
+// this component is for the upload picure feature, using a Cloudinary widget
 const NewPost = () => {
     const navigate = useNavigate()
     const cloudName = process.env.REACT_APP_CLOUDNAME;
     const uploadPreset = process.env.REACT_APP_UPLOADPRESET;
-    const { isAuthenticated, user } = useAuth0();
+    const { user } = useAuth0();
     const [caption, setCaption] = useState();
     const [filmStock, setFilmStock] = useState();
 
@@ -71,6 +72,7 @@ const NewPost = () => {
                 ></TextArea>
             </Section>
             <Section><span>Select a film stock: </span>
+            {/* users need to select a specific film stock...  */}
                 <select onChange={(ev) => setFilmStock(ev.target.value)}>
                     <option value=""></option>
                     <option value="Kodak Portra 400">Kodak Portra 400</option>

@@ -1,7 +1,5 @@
 import { useState, createContext, useEffect} from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { NotificationManager } from "react-notifications";
-import { useParams } from "react-router-dom";
 
 export const GlobalContext = createContext(null);
 
@@ -20,6 +18,7 @@ const GlobalProvider = ({ children }) => {
             "error";
         });
     }, []);
+
 
     return (
         <GlobalContext.Provider

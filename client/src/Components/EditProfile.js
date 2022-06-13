@@ -4,6 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { NotificationManager } from "react-notifications";
 import { useNavigate } from "react-router-dom";
 
+// this component is for the user to be able to edit their profile and add an avatar
 const EditProfile = () => {
     const { user } = useAuth0();
     const [ bio, setBio ] = useState();
@@ -12,7 +13,6 @@ const EditProfile = () => {
     const cloudName = process.env.REACT_APP_CLOUDNAME;
     const uploadPreset = process.env.REACT_APP_UPLOADPRESET;
     const navigate = useNavigate();
-
 
     const showWidget = (e) => {
         e.preventDefault();
@@ -62,7 +62,6 @@ const EditProfile = () => {
                 <Section>Name:
                     <InputSection>
                         <Input 
-
                         required
                         value={handleName}
                         onChange={(e) => setHandleName(e.target.value)}
@@ -92,15 +91,7 @@ const EditProfile = () => {
                         </Input>
                     </InputSection>
                 </Section>
-                {/* { handleName
-                && pronouns
-                && bio ?
-                ( */}
                 <Button type="submit">Add avatar & edit profile</Button>
-                {/* ) : (
-                    <DisabledButton disable>Please fill up all field</DisabledButton>
-                )
-                } */}
             </form>
         </Body>
         </>

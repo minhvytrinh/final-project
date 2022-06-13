@@ -3,7 +3,9 @@ import SubHeader from "./SubHeader";
 import { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import { GlobalContext } from "./GlobalContext";
+import { FiLoader } from "react-icons/fi";
 
+//this component is responsible for showing random pictures from all users
 const Explore = () => {
     const navigate = useNavigate();
     const { posts } = useContext(GlobalContext)
@@ -11,15 +13,24 @@ const Explore = () => {
     return (
         <Body>
             <SubHeader />
-            {posts?.map((post) => {
-                return (
-                    <PostsContainer key={post.id}>
-                        <Post 
-                        onClick={() => navigate(`/post/${post.id}`)}
-                        src={post.url} />
-                    </PostsContainer>
-                )
-            })}
+            {!posts ? (
+                <Loading>
+                    <FiLoader />
+                </Loading>
+            ) : (
+                <>
+                {posts?.map((post) => {
+                    return (
+                        <PostsContainer key={post.id}>
+                            <Post 
+                            onClick={() => navigate(`/post/${post.id}`)}
+                            src={post.url} />
+                        </PostsContainer>
+                    )
+                })}
+                </>
+            )}
+
         </Body>
     )
 }
@@ -33,7 +44,13 @@ const Body = styled.div`
     flex-wrap: wrap;
     justify-content: space-evenly;
 `
-
+const Loading = styled.div`
+    text-align: center;
+    height: 100vh;
+    font-size: 60px;
+    margin-top: 100px;
+    color: 	#B0B0B0;
+`
 const PostsContainer = styled.div`
 `
 const Post = styled.img`
