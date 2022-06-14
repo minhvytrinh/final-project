@@ -83,11 +83,15 @@ const PostDetails = () => {
                     </PictureContainer>
                     <StatsSection>
                         <Icon>
+                            {isAuthenticated ? (
                             <HeartIcon onClick={() => handleLikes()}>
                             {post.likes.some((like) => {
                                 return like.user === user.sub
                             }) ? <AiFillHeart /> : <AiOutlineHeart />}
                             </HeartIcon>
+                            ) : (
+                                <AiOutlineHeart />
+                            )}
                         </Icon>
                         <Stats>
                             <Bold>{post.likes.length}</Bold>

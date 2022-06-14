@@ -76,12 +76,14 @@ const Comment = ( { post } ) => {
                     <Comments>{comment.comment}</Comments>
 
                     {/* only the author of the comment and the picture publisher have the power to delete a comment */}
-                    {comment.authorHandle === user.sub || user.sub === post.user ? (
-                        <TrashIcon onClick={() => deleteComment(comment)} >
-                            <CgTrash />
-                        </TrashIcon>
-                    ) : ("")
-                    }
+                    {isAuthenticated && <>
+                        {comment.authorHandle === user.sub || user.sub === post.user ? (
+                            <TrashIcon onClick={() => deleteComment(comment)} >
+                                <CgTrash />
+                            </TrashIcon>
+                        ) : ("")
+                        }
+                    </>}
                 </div>
             )
         })}

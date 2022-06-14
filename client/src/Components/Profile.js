@@ -65,6 +65,12 @@ const Profile = () => {
         });
     };
 
+    if (!isLoading && !isAuthenticated) {
+        return (
+            <Text>Please log in to see profiles</Text>
+        )
+    }
+
     return (
         <Body>
             {loading ? (
@@ -96,8 +102,14 @@ const Profile = () => {
                             <Username>@{userData.nickname}</Username>
                         </Section>
                         <Section>
-                            <Number>{userData.followers.length}</Number>
-                            <Followers> followers</Followers>
+                            {userData.followers ? (<>
+                                <Number>{userData.followers.length}</Number>
+                                <Followers> followers</Followers>
+                            </>) : (<>
+                                <Number>0</Number>
+                                <Followers> follower</Followers>
+                            </>)}
+                            
                             <Number>{userData.followings.length}</Number>
                             <Followers> followings</Followers>
                         </Section>
@@ -118,10 +130,10 @@ const Profile = () => {
             </Loading>) : (
             <>
             {/* if current logged in user doesn't have any picture, showing a link to upload new picture */}
-            {pictures.length < 1 && user.sub === userData?.id ? (
+            {pictures.length === 0 && user.sub === userData?._id ? (
                 <Upload>
                     <StyledLink to="/newpost">
-                    Click here to start sharing pictures!
+                    Click here to start sharing!
                     </StyledLink>
                 </Upload>
             ) : (
@@ -170,6 +182,13 @@ const Profile = () => {
         </Body>
     )
 }
+const Text = styled.div`
+    font-size: 30px;
+    color: 	#B0B0B0;
+    padding: 30px;
+    text-align: center;
+
+`
 const Body = styled.div`
     margin: 10px 50px 10px 50px;
     border: 1px solid #B0B0B0;
