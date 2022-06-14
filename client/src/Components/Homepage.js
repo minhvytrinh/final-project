@@ -62,9 +62,9 @@ const Homepage = () => {
                                 </PictureContainer>
                                 <StatsSection onClick={() => navigate(`/post/${post.id}`)}>
                                     <Icon>
-                                        <Span>
+
                                             <AiOutlineHeart />
-                                        </Span>
+
                                     </Icon>
                                     <Stats>{post.likes.length}</Stats>
                                     <Icon>
@@ -192,10 +192,5 @@ const Username2 = styled.div`
 const Caption = styled.span`
     font-size: 16px;
 `
-const Span = styled.span`
-        :hover {
-        cursor: pointer;
-        color: orange;
-    }
-`
+
 export default Homepage;

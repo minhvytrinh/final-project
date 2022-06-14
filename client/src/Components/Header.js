@@ -36,11 +36,11 @@ const Header = () => {
             if not logged in, it will bring them to the explore page */}
             {isAuthenticated ? (
                 <LogoSection onClick={() => navigate(`/homepage/${user.sub}`)} >
-                    <Logo src={window.location.origin + "/newlogo1.jpg"} />
+                    <Logo src={window.location.origin + "/FINAL.jpg"} />
                 </LogoSection>
             ) : (
                 <LogoSection onClick={() => navigate("/")} >
-                    <Logo src={window.location.origin + "/newlogo1.jpg"} />
+                    <Logo src={window.location.origin + "/FINAL.jpg"} />
                 </LogoSection>
             )}
 
@@ -140,7 +140,7 @@ const Logo = styled.img`
     height: 120px;
 `;
 const TopRightMenu = styled.div`
-    padding-top: 70px;
+    padding-top: 80px;
 `
 const Section = styled.span`
     padding-right: 10px;

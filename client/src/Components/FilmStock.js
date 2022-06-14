@@ -15,7 +15,7 @@ const FilmStock = () => {
         fetch(`/api/posts-by-film?filmStock=${filmstock}`)
             .then((res) => res.json())
             .then((data) => {
-                // console.log(data.data)
+                console.log(data.data)
                 setFilmStock(data.data);
         })
         .catch((err) => {
@@ -36,6 +36,7 @@ const FilmStock = () => {
                 {filmStock?.map((film) => {
                     return (
                         <PostsContainer key={Math.random() * 140000000000000}>
+                            
                             <Post 
                             onClick={() => navigate(`/post/${film.id}`)}
                             src={film.url} />
@@ -50,7 +51,6 @@ const FilmStock = () => {
 }
 
 const Body = styled.div`
-    margin: 0 10px 10px 10px;
     border: 1px solid #B0B0B0;
     border-top: none;
     border-radius: 10px;
