@@ -95,14 +95,14 @@ const PostDetails = () => {
                         </Icon>
                         <Stats>
                             <Bold>{post.likes.length}</Bold>
-                        {post.likes > 1 ? (<> likes</>) : (<> like</>)}
+                        {post.likes.length > 1 ? (<> likes</>) : (<> like</>)}
                         </Stats>
                         <Icon>
                             <BiComment />
                         </Icon>
                         <Stats>
                             <Bold>{post.comments.length}</Bold> 
-                        {post.comments > 1 ? (<> comments</>) : (<> comment</>)}
+                        {post.comments.length > 1 ? (<> comments</>) : (<> comment</>)}
                         </Stats>
                     </StatsSection>
                     <Section>

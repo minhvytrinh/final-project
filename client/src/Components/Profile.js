@@ -5,6 +5,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { FiLoader } from "react-icons/fi";
 import { BiComment } from "react-icons/bi";
 import { AiOutlineHeart } from "react-icons/ai";
+import { FiPlusCircle } from "react-icons/fi";
 
 //this is the component for the profile of any user. on this page, users will see all pictures from that specific
 // user and they will be able to follow or unfollow them
@@ -138,9 +139,12 @@ const Profile = () => {
             {/* if current logged in user doesn't have any picture, showing a link to upload new picture */}
             {pictures.length === 0 && user.sub === userData?._id ? (
                 <Upload>
-                    <StyledLink to="/newpost">
-                    Click here to start sharing!
-                    </StyledLink>
+                    <Click>
+                    Click
+                        <StyledLink to="/newpost">
+                            <FiPlusCircle />
+                            </StyledLink> to start sharing!
+                    </Click>
                 </Upload>
             ) : (
             <>
@@ -279,13 +283,16 @@ const Upload = styled.div`
     justify-content: center;
     align-items: center;
 `
-const StyledLink = styled(NavLink)`
+const Click = styled.div`
     font-size: 30px;
-    color: 	#B0B0B0;
+    color: #B0B0B0;
     padding: 10px;
     text-align: center;
+`
+const StyledLink = styled(NavLink)`
+    margin-left: 10px;
+    color: 	#B0B0B0;
     text-decoration: none;
-    color: black;
     :hover {
         cursor: pointer;
         color: orange;
