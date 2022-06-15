@@ -110,8 +110,14 @@ const Profile = () => {
                                 <Followers> follower</Followers>
                             </>)}
                             
-                            <Number>{userData.followings.length}</Number>
-                            <Followers> followings</Followers>
+                            {userData.followings.length >= 1 ? ( <>
+                                <Number>{userData.followings.length}</Number>
+                                <Followers> followings</Followers>
+                            </>) : (<>
+                                <Number>0</Number>
+                                <Followers> following</Followers>
+                            </>)}
+
                         </Section>
                         <BioSection>
                             <NameSection>

@@ -34,7 +34,7 @@ const Homepage = () => {
         </Loading>) : (
         <Body>
             {!userData.followings || userData.followings.length < 1 ? (<>
-            <Text>Start following users to have a feed!
+            <Text>Follow users and see their content here!
                 <div>
                     <StyledLink to="/">Click here to explore</StyledLink>
                 </div>
