@@ -35,8 +35,8 @@ const Comment = ( { post } ) => {
             );
             window.location.reload();
         })
-        .catch((error) => {
-            console.log("error")
+        .catch((err) => {
+            "error"
         })
     }
     // ======Deleting a comment function======
@@ -53,7 +53,6 @@ const Comment = ( { post } ) => {
             })
             .then((res) => res.json())
             .then((data) => {
-                console.log("success", data)
                 NotificationManager.success(
                 "Comment successfully deleted!",
                 "Success!"

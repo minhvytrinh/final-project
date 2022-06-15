@@ -18,7 +18,6 @@ const Homepage = () => {
         fetch(`/api/profile/${_id}`)
             .then((res) => res.json())
             .then((data) => {
-                // console.log("userData", data.data)
                 setUserData(data.data);
                 setLoading(false)
         })

@@ -24,7 +24,6 @@ const Profile = () => {
         fetch(`/api/profile/${_id}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log("profile", data.data)
                 setUserData(data.data);
                 setLoading(false)
         })
@@ -39,7 +38,6 @@ const Profile = () => {
         fetch(`/api/posts-by-user?user=${_id}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log("pictures", data.data)
                 setPictures(data.data);
                 setIsLoading(false)
         })

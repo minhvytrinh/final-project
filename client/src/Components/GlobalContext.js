@@ -4,7 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 export const GlobalContext = createContext(null);
 
 const GlobalProvider = ({ children }) => {
-    const { user, isAuthenticated } = useAuth0();
+    const { user } = useAuth0();
     const [posts, setPosts] = useState()
 
     // fetch all posts from all users

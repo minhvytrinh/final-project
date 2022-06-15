@@ -47,7 +47,7 @@ const EditProfile = () => {
                         navigate(`/profile/${user.sub}`)
                 })
                 .catch((err) => {
-                    console.log("error")
+                    "error"
                 });
             }
         })
@@ -138,16 +138,6 @@ const Button = styled.button`
         cursor: pointer;
         background-color: #f5f5f7;
         color: orange;
-    }
-`
-const DisabledButton = styled.button`
-    margin-top:20px;
-    background-color: white;
-    padding: 5px;
-    border-radius: 4px;
-    border: 1px solid #B0B0B0;
-    &:hover {
-    cursor: not-allowed;
     }
 `
 

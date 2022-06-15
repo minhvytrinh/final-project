@@ -26,7 +26,6 @@ const NewPost = () => {
         },
         (error, result) => {
             if (!error && result && result.event === 'success') {
-            // console.log('Done! Here is the image info: ', result.info);
                 fetch('/api/post/upload', {
                     method: 'POST',
                     body: JSON.stringify({

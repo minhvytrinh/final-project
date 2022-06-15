@@ -23,7 +23,6 @@ const PostDetails = () => {
         fetch(`/api/post/${id}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log("single post", data.data)
                 setPost(data.data);
                 setLoading(false)
         })
