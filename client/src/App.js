@@ -10,8 +10,6 @@ import EditProfile from "./Components/EditProfile";
 import FilmStock from "./Components/FilmStock";
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer } from 'react-notifications';
-import Welcome from "./Components/Welcome";
-
 
 const App = () => {
   return (
@@ -29,7 +27,6 @@ const App = () => {
                 <Route path="/post/:id" element={<PostDetails />} />
                 <Route path="/editprofile" element={<EditProfile />} />
                 <Route path="/posts/:filmstock" element={<FilmStock />} />
-                <Route path="/welcome" element={<Welcome />} />
               </Routes>
             </Container>
           </Body>
