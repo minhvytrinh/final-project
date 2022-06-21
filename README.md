@@ -2,6 +2,9 @@
 Box Speed is an app for people who love film photography and want to share their pictures and connect with others. 
 Users can create an account, update their profile, upload pictures, like & comment on other's people pictures and follow other users. Not logged in users can only browse pictures but can not like, comment, follow or see profiles.
 
+For a quick demo, follow this link:
+https://www.youtube.com/watch?v=TecfDRO-fuI
+
 ## Upload new pictures
 Users will be able to upload pictures from their computer, add a caption and select which film stock they used.
 ![UPLOAD!](assets/UPLOAD.jpg)
